@@ -1,0 +1,331 @@
+/* style.css */
+
+:root {
+    --paper:        #f4f0e8;
+    --black:        #000000;
+    --ink:          var(--black);
+    --pencil:       #222222;
+    --off-white:    #f2f0ef;
+    --dark-paper:   #f0ebe1;
+    --old-paper:    #e0c9a6; 
+    --colid:        #cccccc;
+    /* 
+    --link-base:    #0000ff;
+    --link-hover:   #99ccff;
+    */
+    --link-base:    #993300;
+    --link-hover:   #B33C00;
+}
+
+html {
+    box-sizing: border-box;
+    height: 100%;
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+/* body acts as a centering wrapper */
+body {
+    margin: 0;
+    min-height: 100%;
+    /*
+    font-family: 'Times New Roman', Times, serif;
+    */
+    font-family: 'Trebuchet MS', Helvetica, Arial, sans-serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    background-color: var(--paper);
+    line-height: 1.2;
+    
+    /*
+    background-image: url('bg.webp');
+    background-size: cover;      
+    background-position: center; 
+    background-repeat: no-repeat;
+    */
+    
+    /* centers on larger screens */
+    display: flex;
+    justify-content: center;
+}
+
+#app-container {
+    display: grid;
+    grid-template-rows: auto 1fr auto; /* header, content, footer */
+    width: 100%;
+    /*max-width: 56rem;*/
+    min-height: 96vh;
+    padding-inline: 1rem;
+}
+
+header h1, 
+.about,
+.sort-controls,
+.menu, 
+#post {
+    max-width: 56rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+}
+
+/* all of these go inside the app-container */
+
+/* header ------------------------------------------------------------------ */
+header {
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid var(--pencil);
+}
+
+header h1 {
+    display: grid;
+    font-size: 3rem;
+    font-weight: 500;
+    font-variant: small-caps;
+    margin-bottom: 0.4rem;
+    margin-top: 0.4rem;
+}
+
+header a {
+    color: var(--pencil);
+    text-decoration: none;
+}
+
+header a:hover {
+    color: var(--pencil);
+    text-decoration: underline;
+}
+
+/* footer ------------------------------------------------------------------ */
+footer {
+    margin: 0.8rem 0rem;
+    padding: 0.8rem 0rem;
+    border-top: 1px solid var(--pencil);
+}
+
+footer p {
+    margin: 0;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    font-size: 1.2rem;
+    text-align: right;
+}
+
+/* menu -------------------------------------------------------------------- */
+.menu {
+    font-size: 1.4rem;
+    max-width: 56rem;
+    line-height: 1.6rem;
+}
+
+.menu h3 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+}
+
+.menu h3:first-of-type {
+    margin-top: 0;
+}
+
+.menu ul, .menu ol {
+    list-style: none;
+    padding-left: 0rem;
+    margin-bottom: 1.4rem;
+    border-bottom: 1px solid var(--colid);
+}
+
+.menu li {
+    margin-bottom: 0.6rem;
+}
+
+.menu li p {
+    line-height: 0.5rem;
+    margin-bottom: 0.1rem;
+}
+
+.menu li span {
+    margin-bottom: 1rem;
+}
+
+.menu li span strong {
+    font-size: 1.4rem;
+}
+
+.menu li span i {
+    font-size: 1.1rem;
+}
+
+.menu li small {
+    font-size: 1rem;
+}
+
+.menu a i {
+    color: var(--pencil);
+}
+
+.menu a:hover i {
+    color: var(--link-hover);
+}
+
+.menu a {
+    color: var(--link-base);
+    text-decoration: none;
+}
+
+.menu a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+}
+
+.menu p {
+    font-size: 0.9rem;
+    line-height: 1.2rem;
+    margin: 0.2rem 0rem 1rem 0rem;
+}
+
+/* post -------------------------------------------------------------------- */
+#post {
+    display: flex;
+    gap: 0;
+    flex-direction: column;
+    min-height: 49rem;
+    font-size: 1.2rem;
+    color: var(--pencil);
+    overflow-wrap: break-word;
+}
+
+#post > * {
+    margin-top: 0.6rem;
+    margin-bottom: 0.6rem;
+}
+
+#post h1,
+#post h2,
+#post h3,
+#post h4,
+#post h5,
+#post h6 {
+    margin-top: 1.6rem;
+    margin-bottom: 0.6rem;
+}
+
+#post li {
+    line-height: 1.5rem;
+}
+
+#post p {
+    line-height: 1.6rem;
+}
+
+#post a {
+    color: var(--link-base);
+    text-decoration: none;
+}
+
+#post a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+}
+
+#post code {
+    font-family: Consolas, "Courier New", monospace;
+}
+
+#post pre {
+    background-color: var(--dark-paper);
+    /*
+    border: 1px solid var(--ink);
+    */
+    border-radius: 4px;
+    padding: 1rem;
+    white-space: pre-wrap;  
+    word-break: break-word;
+    font-size: 0.9em;
+}
+
+#post blockquote {
+    margin: 0rem;
+    padding: 0.4rem 2rem;
+    background-color: var(--dark-paper);
+    border-left: 0.2rem solid var(--old-paper);
+}
+
+#post blockquote p {
+    margin: 0rem;
+}
+
+#post-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: auto;
+    padding-top: 2rem;
+}
+
+#post .prev {
+    font-size: 0.9em;
+}
+
+#post .next {
+    font-size: 0.9em;
+}
+
+/* sort controls ----------------------------------------------------------- */
+.sort-controls {
+    position: relative;
+    display: flex;
+    padding: 0 1rem 1rem 1rem;
+    margin-bottom: 1.5rem;
+    gap: 0.5rem;
+}
+
+/* fake border underline */
+.sort-controls::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 1rem;
+    right: 1rem;
+    height: 1px;
+    background-color: var(--colid);
+}
+
+.sort-controls button {
+    font-size: 1rem;
+    font-variant: small-caps;
+    padding: 0.2rem 0.4rem;
+    border: 1px solid var(--pencil);
+    background-color: transparent;
+    color: var(--pencil);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-radius: 0.3rem;
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+.sort-controls button:hover {
+    background-color: var(--old-paper);
+    border-color: var(--ink);
+}
+
+.sort-controls button.active {
+    background-color: var(--old-paper);
+    /*color: var(--paper);*/
+    border-color: var(--ink);
+    /*font-weight: 500;*/
+}
+
+.sort-controls button:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+.sort-controls button.active:hover {
+    background-color: var(--old-paper);
+}
+
+/* breadcrumb trail -------------------------------------------------------- */
+
+
