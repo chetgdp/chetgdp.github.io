@@ -29,28 +29,25 @@ function loadPostList() {
 }
 */
 
+// currently refactoring
+window.SORT_ORDER = 'date-oldest';
+// replaces switch cases
+let sort_order = {
+    "alphabetical": 0,
+    "date-newest": 1,
+    "date-oldest": 2,
+};
 // Claude from here 
-function loadPostList(sortOrder = 'date-oldest') {
-    let menu;
-    switch(sortOrder) {
-        case 'alphabetical':
-            menu = window.wasm_module.get_menu_html_sorted(0);
-            break;
-        case 'date-newest':
-            menu = window.wasm_module.get_menu_html_sorted(1);
-            break;
-        case 'date-oldest':
-            menu = window.wasm_module.get_menu_html_sorted(2);
-            break;
-    }
-    
+function loadPostList(sortOrder) {
+    const menu = window.wasm_module.get_menu_html_sorted(sort_order[sortOrder]);
     const about = window.wasm_module.get_about_html();
+    // maybe this can go into wasm?
     const html = `
         <div class="about">${about}</div>
         <div class="sort-controls">
             <button data-sort="alphabetical" onclick="updateMenuSort('alphabetical')">A-Z</button>
             <button data-sort="date-newest" onclick="updateMenuSort('date-newest')">Newest</button>
-            <button data-sort="date-oldest" onclick="updateMenuSort('date-oldest')" class="active">Oldest</button>
+            <button data-sort="date-oldest" onclick="updateMenuSort('date-oldest')">Oldest</button>
         </div>
         <div class="menu">${menu}</div>
     `;
@@ -59,21 +56,7 @@ function loadPostList(sortOrder = 'date-oldest') {
 
 // Only update the menu portion
 function updateMenuSort(sortOrder) {
-    let menu;
-    switch(sortOrder) {
-        case 'alphabetical':
-            console.log("test1");
-            menu = window.wasm_module.get_menu_html_sorted(0);
-            break;
-        case 'date-newest':
-            console.log("test2");
-            menu = window.wasm_module.get_menu_html_sorted(1);
-            break;
-        case 'date-oldest':
-            console.log("test3");
-            menu = window.wasm_module.get_menu_html_sorted(2);
-            break;
-    }
+    const menu = window.wasm_module.get_menu_html_sorted(sort_order[sortOrder]);
     
     // Find and update just the menu div
     const menuDiv = document.querySelector('.menu');
@@ -81,6 +64,7 @@ function updateMenuSort(sortOrder) {
         menuDiv.innerHTML = menu;
     }
 
+    window.SORT_ORDER = sortOrder;
     updateActiveButton(sortOrder);
 }
 
@@ -117,7 +101,7 @@ function handleLocationChange() {
             main += `<h2>Error: Post not found at "${path}"</h2>`;
         }
     } else {
-        main += loadPostList();
+        main += loadPostList(window.SORT_ORDER);
     }
     html += `<main>${main}</main>`;
 
@@ -125,6 +109,14 @@ function handleLocationChange() {
     html += window.wasm_module.get_footer_html();
 
     appContainer.innerHTML = html;
+    
+    // code highlighting
+    document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightElement(block);
+    });
+
+    //
+    updateMenuSort(window.SORT_ORDER);
 }
 
 // --- Event Listeners and Initialization ---

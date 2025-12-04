@@ -328,4 +328,107 @@ footer p {
 
 /* breadcrumb trail -------------------------------------------------------- */
 
+/* Custom syntax highlighting theme for paper aesthetic */
+
+/* Base styles for code blocks */
+pre code.hljs {
+    display: block;
+    overflow-x: auto;
+    padding: 1em;
+    background: var(--dark-paper);
+    color: var(--pencil);
+}
+
+/* Inline code */
+code.hljs {
+    padding: 3px 5px;
+}
+
+/* Keywords (if, else, function, const, etc.) */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-type {
+    color: #8B4513; /* saddle brown - like ink */
+    font-weight: 500;
+}
+
+/* Function and class names */
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.function_,
+.hljs-name {
+    color: #2F4F4F; /* dark slate gray */
+    font-weight: 500;
+}
+
+/* Strings */
+.hljs-string,
+.hljs-regexp {
+    color: #556B2F; /* dark olive green - like old text */
+}
+
+/* Numbers */
+.hljs-number {
+    color: #8B4513;
+}
+
+/* Comments */
+.hljs-comment,
+.hljs-quote {
+    color: #999999;
+    font-style: italic;
+}
+
+/* Variables and attributes */
+.hljs-variable,
+.hljs-attr,
+.hljs-attribute {
+    color: #4A4A4A;
+}
+
+/* Built-in functions and symbols */
+.hljs-built_in,
+.hljs-symbol,
+.hljs-bullet {
+    color: #B8860B; /* dark goldenrod */
+}
+
+/* Operators */
+.hljs-operator {
+    color: var(--pencil);
+}
+
+/* Meta, doctags */
+.hljs-meta,
+.hljs-doctag {
+    color: #708090; /* slate gray */
+}
+
+/* Sections/headers in code */
+.hljs-section {
+    color: #2F4F4F;
+    font-weight: 700;
+}
+
+/* Emphasis */
+.hljs-emphasis {
+    font-style: italic;
+}
+
+.hljs-strong {
+    font-weight: 700;
+}
+
+/* Additions (for diffs) */
+.hljs-addition {
+    background-color: #e6f3e6;
+    color: #2d5016;
+}
+
+/* Deletions (for diffs) */
+.hljs-deletion {
+    background-color: #f8d7da;
+    color: #721c24;
+}
 
