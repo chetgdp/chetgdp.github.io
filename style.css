@@ -33,7 +33,7 @@ body {
     font-family: 'Times New Roman', Times, serif;
     */
     font-family: 'Trebuchet MS', Helvetica, Arial, sans-serif;
-    font-size: 1.4rem;
+    font-size: 1rem;
     font-weight: 400;
     background-color: var(--paper);
     line-height: 1.2;
@@ -99,7 +99,7 @@ header a:hover {
 
 /* footer ------------------------------------------------------------------ */
 footer {
-    margin: 0.8rem 0rem;
+    margin: 0.8rem 0rem 0rem 0rem;
     padding: 0.8rem 0rem;
     border-top: 1px solid var(--pencil);
 }
@@ -108,36 +108,39 @@ footer p {
     margin: 0;
     padding-right: 0.5rem;
     padding-left: 0.5rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
     text-align: right;
 }
 
 /* menu -------------------------------------------------------------------- */
 .menu {
-    font-size: 1.4rem;
+    font-size: 1rem;
     max-width: 56rem;
-    line-height: 1.6rem;
+    line-height: 1.2rem;
 }
 
 .menu h3 {
-    font-size: 1.4rem;
-    margin-bottom: 1rem;
-    margin-top: 2rem;
+    font-size: 1.3rem;
+    margin-bottom: 0.2rem;
+    margin-top: 0.6rem;
 }
 
+/*
 .menu h3:first-of-type {
     margin-top: 0;
 }
+*/
 
 .menu ul, .menu ol {
     list-style: none;
     padding-left: 0rem;
-    margin-bottom: 1.4rem;
+    margin-bottom: 1rem;
+    margin-top: 0.6rem;
     border-bottom: 1px solid var(--colid);
 }
 
 .menu li {
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.4rem;
 }
 
 .menu li p {
@@ -150,11 +153,11 @@ footer p {
 }
 
 .menu li span strong {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
 }
 
 .menu li span i {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
 }
 
 .menu li small {
@@ -190,8 +193,8 @@ footer p {
     display: flex;
     gap: 0;
     flex-direction: column;
-    min-height: 49rem;
-    font-size: 1.2rem;
+    /*min-height: 49rem;*/
+    font-size: 1rem;
     color: var(--pencil);
     overflow-wrap: break-word;
 }
@@ -294,7 +297,7 @@ footer p {
 }
 
 .sort-controls button {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-variant: small-caps;
     padding: 0.2rem 0.4rem;
     border: 1px solid var(--pencil);
