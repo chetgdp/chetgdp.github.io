@@ -1,10 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
+export function get_post(path: string): string | undefined;
+export function get_menu_html_sorted(sort: SortOrder): string;
 export function get_header_html(): string;
 export function get_footer_html(): string;
 export function get_about_html(): string;
-export function get_post(path: string): string | undefined;
-export function get_menu_html_sorted(sort: SortOrder): string;
 export function start(): void;
 export enum SortOrder {
   Alphabetical = 0,
@@ -16,11 +16,11 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly get_post: (a: number, b: number) => [number, number];
+  readonly get_menu_html_sorted: (a: number) => [number, number];
   readonly get_header_html: () => [number, number];
   readonly get_footer_html: () => [number, number];
   readonly get_about_html: () => [number, number];
-  readonly get_post: (a: number, b: number) => [number, number];
-  readonly get_menu_html_sorted: (a: number) => [number, number];
   readonly start: () => void;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;

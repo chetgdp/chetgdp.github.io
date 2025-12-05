@@ -93,6 +93,39 @@ function getDataViewMemory0() {
     return cachedDataViewMemory0;
 }
 /**
+ * @param {string} path
+ * @returns {string | undefined}
+ */
+export function get_post(path) {
+    const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.get_post(ptr0, len0);
+    let v2;
+    if (ret[0] !== 0) {
+        v2 = getStringFromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+    }
+    return v2;
+}
+
+/**
+ * @param {SortOrder} sort
+ * @returns {string}
+ */
+export function get_menu_html_sorted(sort) {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.get_menu_html_sorted(sort);
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
+
+/**
  * @returns {string}
  */
 export function get_header_html() {
@@ -132,39 +165,6 @@ export function get_about_html() {
     let deferred1_1;
     try {
         const ret = wasm.get_about_html();
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
-}
-
-/**
- * @param {string} path
- * @returns {string | undefined}
- */
-export function get_post(path) {
-    const ptr0 = passStringToWasm0(path, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.get_post(ptr0, len0);
-    let v2;
-    if (ret[0] !== 0) {
-        v2 = getStringFromWasm0(ret[0], ret[1]).slice();
-        wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
-    }
-    return v2;
-}
-
-/**
- * @param {SortOrder} sort
- * @returns {string}
- */
-export function get_menu_html_sorted(sort) {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.get_menu_html_sorted(sort);
         deferred1_0 = ret[0];
         deferred1_1 = ret[1];
         return getStringFromWasm0(ret[0], ret[1]);
