@@ -54,9 +54,8 @@ body {
     display: grid;
     grid-template-rows: auto 1fr auto; /* header, content, footer */
     width: 100%;
-    /*max-width: 56rem;*/
     min-height: 96vh;
-    padding-inline: 1rem;
+    padding-inline: 0.4rem;
 }
 
 header h1, 
@@ -66,7 +65,7 @@ header h1,
 #post {
     max-width: 56rem;
     margin-inline: auto;
-    padding-inline: 1rem;
+    padding-inline: 0.4rem;
 }
 
 /* all of these go inside the app-container */
@@ -99,8 +98,8 @@ header a:hover {
 
 /* footer ------------------------------------------------------------------ */
 footer {
-    margin: 0.8rem 0rem 0rem 0rem;
-    padding: 0.8rem 0rem;
+    margin: 0.6rem 0rem 0rem 0rem;
+    padding: 0.6rem 0rem;
     border-top: 1px solid var(--pencil);
 }
 
@@ -116,13 +115,13 @@ footer p {
 .menu {
     font-size: 1rem;
     max-width: 56rem;
-    line-height: 1.2rem;
+    line-height: 1rem;
 }
 
 .menu h3 {
     font-size: 1.3rem;
     margin-bottom: 0.2rem;
-    margin-top: 0.6rem;
+    margin-top: 0.4rem;
 }
 
 /*
@@ -134,9 +133,13 @@ footer p {
 .menu ul, .menu ol {
     list-style: none;
     padding-left: 0rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
     margin-top: 0.6rem;
     border-bottom: 1px solid var(--colid);
+}
+
+.menu .link-info {
+    margin-bottom: 0.6rem;
 }
 
 .menu li {
@@ -145,7 +148,7 @@ footer p {
 
 .menu li p {
     line-height: 0.5rem;
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.2rem;
 }
 
 .menu li span {
@@ -161,7 +164,7 @@ footer p {
 }
 
 .menu li small {
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 .menu a i {
