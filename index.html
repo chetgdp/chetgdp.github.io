@@ -1,13 +1,57 @@
 <!DOCTYPE html>
 <html>
-    <head>
-    </head>
-    <body>
-        hi
-        <div>
-            <span><a href="notes.html">notes</a></span>
-            <span><a href="pixel.ai.html">pixel.ai</a></span>
-        </div>
-    </body>
-</html>
+<head>
+<style>
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        place-items: center;
+        place-content: center;
+    }
 
+    main {
+        margin: 1rem;
+        
+    }
+
+    footer {
+        margin: 1rem;
+    }
+</style>
+</head>
+<body>
+    <main>
+        <p>hi</p>
+        <div><span><a href="notes">/notes</a></span></div>
+        <div><span><a href="/pixel.ai">/pixel.ai</a></span></div>
+    </main>
+    <footer class="footer">
+        <span><a href="https://github.com/chetgdp">/github</a></span>
+    </footer>
+<script type="speculationrules">
+{
+    "prerender": [
+        {
+            "where": { "selector_matches": "main a" },
+            "eagerness": "moderate"
+        }
+    ]
+}
+</script>
+<script>
+    document.querySelectorAll('main a').forEach(link => {
+        const indicator = document.createElement('span');
+        link.appendChild(indicator);
+        link.addEventListener('pointerenter', () => {
+            if (indicator.dataset.done) return;
+            indicator.textContent = ' ...';
+            fetch(link.href, { priority: 'low' })
+                .then(() => { indicator.textContent = ' ✓'; indicator.dataset.done = '1'; })
+                .catch(() => { indicator.textContent = ' ✗'; indicator.dataset.done = '1'; });
+        }, { once: true });
+    });
+</script>
+</body>
+</html>
