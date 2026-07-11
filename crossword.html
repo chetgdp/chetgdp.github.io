@@ -1,0 +1,2312 @@
+<!DOCTYPE html><html><head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1">
+<title>Crossword MC - histos</title>
+<meta name="description" content="A Minecraft-styled crossword game for .xd puzzles, packed into one HTML file.">
+<meta name="author" content="histos examples">
+<meta name="keywords" content="crossword, xd, javascript, histos, offline, minecraft">
+
+
+<link rel="icon" type="image/(favicon.mime_type)" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3QgeD0iMSIgeT0iMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIiByeD0iNCIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSIjMTIxMjEyIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8cmVjdCB4PSIyIiB5PSIyIiB3aWR0aD0iMTQiIGhlaWdodD0iMTQiIGZpbGw9IiMxMjEyMTIiLz4KICA8cmVjdCB4PSIxNiIgeT0iMTYiIHdpZHRoPSIxNCIgaGVpZ2h0PSIxNCIgZmlsbD0iI2ZmZGEwMCIvPgogIDx0ZXh0IHg9IjIzIiB5PSIxMyIgZm9udC1mYW1pbHk9IkhlbHZldGljYSwgQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSJib2xkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMTIxMjEyIj5BPC90ZXh0PgogIDx0ZXh0IHg9IjkiIHk9IjI3IiBmb250LWZhbWlseT0iSGVsdmV0aWNhLCBBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMxMjEyMTIiPlo8L3RleHQ+Cjwvc3ZnPgo=">
+
+
+<style>/* base.css: reset, variables, theme */
+
+:root {
+  --bg: #ffffff;
+  --fg: #121212;
+  --fg-muted: #666;
+  --border: #d0d0d0;
+  --grid-line: #444;
+  --cell-bg: #ffffff;
+  --cell-block: #121212;
+  --cell-sel: #ffda00;
+  --cell-word: #a7d8ff;
+  --cell-special: #dcdcdc;
+  --pencil: #8a8a8a;
+  --wrong: #e33;
+  --revealed: #3b76d0;
+  --btn-bg: #f4f4f4;
+  --btn-border: #c9c9c9;
+  --accent: #4f85e5;
+  --modal-bg: #ffffff;
+  --overlay: rgba(255, 255, 255, 0.93);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17181a;
+    --fg: #e8e8e8;
+    --fg-muted: #9a9a9a;
+    --border: #3a3b3e;
+    --grid-line: #6b6c70;
+    --cell-bg: #232428;
+    --cell-block: #000000;
+    --cell-sel: #a98f00;
+    --cell-word: #2c4a66;
+    --cell-special: #3f4046;
+    --pencil: #8a8a8a;
+    --wrong: #ff6b6b;
+    --revealed: #7aa5e8;
+    --btn-bg: #26272b;
+    --btn-border: #4a4b4f;
+    --accent: #7aa5e8;
+    --modal-bg: #202124;
+    --overlay: rgba(23, 24, 26, 0.93);
+  }
+}
+/* forced via the theme toggle (duplicate of the media block above) */
+:root[data-theme="dark"] {
+  --bg: #17181a;
+  --fg: #e8e8e8;
+  --fg-muted: #9a9a9a;
+  --border: #3a3b3e;
+  --grid-line: #6b6c70;
+  --cell-bg: #232428;
+  --cell-block: #000000;
+  --cell-sel: #a98f00;
+  --cell-word: #2c4a66;
+  --cell-special: #3f4046;
+  --pencil: #8a8a8a;
+  --wrong: #ff6b6b;
+  --revealed: #7aa5e8;
+  --btn-bg: #26272b;
+  --btn-border: #4a4b4f;
+  --accent: #7aa5e8;
+  --modal-bg: #202124;
+  --overlay: rgba(23, 24, 26, 0.93);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* the hidden attribute must win over display:flex on modals/overlays */
+[hidden] { display: none !important; }
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.4;
+}
+
+button, select, input, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button, select {
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: 4px;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+}
+
+button:hover, select:hover { border-color: var(--accent); }
+
+button.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+a { color: var(--accent); }
+</style>
+
+<style>/* app.css: layout, grid, clues, modals */
+
+#app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem 2rem;
+}
+
+/* ---- top bar ---- */
+
+#topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.6rem;
+}
+
+#puzzle-info h1 { font-size: 1.15rem; display: inline; }
+#p-byline { color: var(--fg-muted); margin-left: 0.5rem; font-size: 0.9rem; }
+
+#toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+  font-size: 0.85rem;
+}
+
+#timer {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  min-width: 3.2em;
+  text-align: right;
+}
+
+/* dropdown menus */
+.menu { position: relative; }
+.menu summary {
+  list-style: none;
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: 4px;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+  user-select: none;
+}
+.menu summary::-webkit-details-marker { display: none; }
+.menu summary::after { content: " \25BE"; font-size: 0.75em; }
+.menu[open] summary { border-color: var(--accent); }
+.menu .menu-items {
+  position: absolute;
+  top: calc(100% + 2px);
+  right: 0; /* toolbar sits at the right edge; left-anchoring overflows the screen on narrow viewports */
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  min-width: 9rem;
+  background: var(--modal-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  padding: 0.25rem;
+}
+.menu .menu-items button {
+  border: none;
+  background: none;
+  text-align: left;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+}
+.menu .menu-items button:hover { background: var(--cell-word); }
+.menu-toggle {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  padding: 0.4rem 0.6rem;
+  border-top: 1px solid var(--border);
+  margin-top: 0.25rem;
+  cursor: pointer;
+}
+
+/* ---- clue bar ---- */
+
+/* sits below the grid so its height changes never move the grid */
+#clue-bar {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  background: var(--cell-word);
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.75rem;
+  min-height: 2.2rem;
+}
+#clue-bar-num { font-weight: 700; white-space: nowrap; }
+
+/* ---- board layout ---- */
+
+#board {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+#grid-wrap {
+  position: relative;
+  flex: 0 1 560px;
+  max-width: 560px;
+}
+
+#clue-columns {
+  flex: 1 1 0;
+  display: flex;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+@media (max-width: 820px) {
+  /* stacked layout: in column direction align-items:flex-start would shrink
+     the grid (all-1fr columns, no intrinsic width) to zero width, and the
+     560px flex-basis would become a height */
+  #board { flex-direction: column; align-items: stretch; }
+  #grid-wrap {
+    flex: none;
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  #clue-columns { width: 100%; }
+}
+
+/* phones: single clue column, page-level scrolling, sticky clue bar */
+@media (max-width: 600px) {
+  #app { padding: 0.5rem 0.5rem 2rem; }
+
+  #topbar { gap: 0.3rem 0.5rem; }
+  #toolbar {
+    margin-left: 0;
+    width: 100%;
+    font-size: 0.8rem;
+    gap: 0.3rem;
+  }
+  #toolbar button, #toolbar select, .menu summary { padding: 0.35rem 0.5rem; }
+  #timer { margin-right: auto; text-align: left; }
+
+  /* one full-width clue list per direction; let the page scroll instead
+     of nesting scrollboxes */
+  #clue-columns { flex-direction: column; gap: 1rem; }
+  .clue-list ol { max-height: none; overflow-y: visible; }
+  .clue-list li { padding: 0.45rem 0.4rem; }
+}
+
+/* ---- grid ---- */
+
+#grid {
+  display: grid;
+  border: 2px solid var(--grid-line);
+  background: var(--grid-line);
+  gap: 1px;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; /* no double-tap zoom when tapping cells quickly */
+}
+
+.cell {
+  position: relative;
+  background: var(--cell-bg);
+  aspect-ratio: 1;
+  cursor: pointer;
+  overflow: hidden;
+}
+.cell.block { background: var(--cell-block); cursor: default; }
+.cell.missing { background: var(--bg); cursor: default; }
+.cell.special-shaded { background: var(--cell-special); }
+.cell.special-circle::before {
+  content: "";
+  position: absolute;
+  inset: 4%;
+  border: 1.5px solid var(--fg-muted);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.cell.word { background: var(--cell-word); }
+.cell.sel { background: var(--cell-sel); }
+
+.cell .num {
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  font-size: 0.62em;
+  line-height: 1;
+  color: var(--fg-muted);
+  z-index: 2;
+}
+.cell.word .num, .cell.sel .num { color: var(--fg); }
+
+.cell .letter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 6%;
+  font-weight: 600;
+  font-size: 1.15em;
+  line-height: 1;
+}
+.cell .letter.len-2 { font-size: 0.8em; }
+.cell .letter.len-3 { font-size: 0.6em; }
+.cell .letter.len-4 { font-size: 0.45em; }
+.cell .letter.len-5 { font-size: 0.38em; letter-spacing: -0.03em; }
+
+.cell.pencil .letter { color: var(--pencil); font-weight: 400; }
+
+.cell.wrong::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top right,
+    transparent calc(50% - 1px), var(--wrong) calc(50% - 1px),
+    var(--wrong) calc(50% + 1px), transparent calc(50% + 1px));
+  pointer-events: none;
+  z-index: 3;
+}
+
+.cell.revealed .letter { color: var(--revealed); }
+.cell.revealed .num::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.cell.revealed::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  /* em scales with cell size (grid font-size is derived from cell width) */
+  border-top: 0.4em solid var(--wrong);
+  border-left: 0.4em solid transparent;
+  z-index: 3;
+}
+
+.cell.rebus-editing { outline: 2px solid var(--accent); outline-offset: -2px; z-index: 4; }
+
+/* ---- pause overlay ---- */
+
+#pause-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  z-index: 10;
+  font-size: 1.3rem;
+}
+
+/* ---- clue lists ---- */
+
+.clue-list { flex: 1 1 0; min-width: 0; }
+.clue-list h2 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.3rem;
+  margin-bottom: 0.3rem;
+}
+.clue-list ol {
+  list-style: none;
+  max-height: 65vh;
+  overflow-y: auto;
+}
+.clue-list li {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.3rem 0.4rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-left: 6px solid transparent;
+  border-radius: 2px;
+}
+.clue-list li:hover { background: var(--btn-bg); }
+.clue-list li .cnum {
+  font-weight: 700;
+  min-width: 1.6em;
+  text-align: right;
+  flex: none;
+}
+.clue-list li.active { background: var(--cell-word); }
+.clue-list li.cross { border-left-color: var(--cell-word); }
+.clue-list li.done { color: var(--fg-muted); }
+.clue-list.static li { cursor: default; }
+
+/* ---- notes ---- */
+
+#notes-wrap { margin-top: 1.5rem; }
+#notes-wrap h2 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+#p-notes { font: inherit; white-space: pre-wrap; color: var(--fg-muted); }
+
+/* ---- modals ---- */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 1rem;
+}
+.modal {
+  background: var(--modal-bg);
+  border-radius: 8px;
+  padding: 1.25rem;
+  width: min(560px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+.modal h2 { margin-bottom: 0.5rem; }
+.modal p { margin-bottom: 0.75rem; }
+.modal textarea {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+}
+.modal-row { margin-top: 0.75rem; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 0.5rem; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+#load-errors {
+  margin-top: 0.75rem;
+  border: 1px solid var(--wrong);
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  max-height: 10rem;
+  overflow-y: auto;
+}
+#load-errors.warnings-only { border-color: var(--btn-border); color: var(--fg-muted); }
+#load-errors .err { color: var(--wrong); }
+
+/* ---- toast ---- */
+
+#toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--fg);
+  color: var(--bg);
+  padding: 0.6rem 1.1rem;
+  border-radius: 6px;
+  z-index: 60;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  max-width: 90vw;
+}
+</style>
+
+<style>/* mc.css: Minecraft theme layer, loaded after base.css and app.css.
+   Overrides the theme variables and re-skins buttons/panels with the
+   blocky, hard-edged look of the Minecraft UI. No external fonts:
+   the packed HTML must work offline via file://. */
+
+:root {
+  /* daytime overworld: sky, grass, dirt, stone */
+  --bg: #78a7ff;                /* sky blue */
+  --fg: #1e1e1e;
+  --fg-muted: #4a4a4a;
+  --border: #373737;
+  --grid-line: #373737;
+  --cell-bg: #d7cba6;           /* sandstone */
+  --cell-block: #373737;        /* bedrock */
+  --cell-sel: #ffd83d;          /* gold block */
+  --cell-word: #7fb238;         /* grass green */
+  --cell-special: #a0a0a0;      /* stone */
+  --pencil: #5b5b5b;
+  --wrong: #b02e26;             /* redstone */
+  --revealed: #3c44aa;          /* lapis */
+  --btn-bg: #7d7d7d;            /* stone button */
+  --btn-border: #373737;
+  --accent: #5e8b2f;            /* emerald-ish green */
+  --modal-bg: #c6c6c6;          /* inventory gray */
+  --overlay: rgba(120, 167, 255, 0.93);
+  --clue-num: #6b4a12;          /* dark gold, readable on the light panel */
+  --panel-shade: rgba(0, 0, 0, 0.14);
+  --panel-line: rgba(0, 0, 0, 0.18);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* nighttime / cave */
+    --bg: #0b0a10;              /* the void (matches the tile base color) */
+    --fg: #e8e8e8;
+    --fg-muted: #a5a5a5;
+    --border: #000000;
+    --grid-line: #000000;
+    --cell-bg: #5a4633;         /* dirt */
+    --cell-block: #0a0a0a;
+    --cell-sel: #c9a132;
+    --cell-word: #4a7a1e;
+    --cell-special: #4d4d4d;
+    --pencil: #9a9a9a;
+    --wrong: #ff5545;
+    --revealed: #7a86ff;
+    --btn-bg: #4d4d4d;
+    --btn-border: #000000;
+    --accent: #7fb238;
+    --modal-bg: #2e2e2e;
+    --overlay: rgba(11, 10, 16, 0.93);
+    --clue-num: #ffd83d;        /* gold, readable on the dark panel */
+    --panel-shade: rgba(0, 0, 0, 0.30);
+    --panel-line: rgba(255, 255, 255, 0.10);
+  }
+}
+/* forced via the theme toggle (duplicate of the media block above) */
+:root[data-theme="dark"] {
+  /* nighttime / cave */
+  --bg: #0b0a10;              /* the void (matches the tile base color) */
+  --fg: #e8e8e8;
+  --fg-muted: #a5a5a5;
+  --border: #000000;
+  --grid-line: #000000;
+  --cell-bg: #5a4633;         /* dirt */
+  --cell-block: #0a0a0a;
+  --cell-sel: #c9a132;
+  --cell-word: #4a7a1e;
+  --cell-special: #4d4d4d;
+  --pencil: #9a9a9a;
+  --wrong: #ff5545;
+  --revealed: #7a86ff;
+  --btn-bg: #4d4d4d;
+  --btn-border: #000000;
+  --accent: #7fb238;
+  --modal-bg: #2e2e2e;
+  --overlay: rgba(11, 10, 16, 0.93);
+  --clue-num: #ffd83d;        /* gold, readable on the dark panel */
+  --panel-shade: rgba(0, 0, 0, 0.30);
+  --panel-line: rgba(255, 255, 255, 0.10);
+}
+
+/* light mode: tile the body with a generated pixel-sky texture -
+   blocky Minecraft-style clouds on the sky blue (64x64 px, shown at 4x) */
+body {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAA00lEQVR42u3ZwQ2EIBCFYZZgD55N7MLC7GgbsQsTz/ZAotvAJg4KmZn4c/Rg/GAQXuYzf8/gecTgfAAAAAAAgHcD0t+n05iL3rKsnSHANOahL1iZbT98l9DQx9IVswXY9sNWCS1rF0L2vYkVZ5RzAAAAAAAAAAAA4OllrvWQ5AfhhTKpfP1l4pOnPKMlJE95OiUkmWC7JVQ3LfEbBQAAAAAAAAAAAABALRPf645VjASpdbpt3dWMlvOuUUDdrmZ6nG6z702s3s/kHAAAAAAAAAA0xw//MDT0wRJAEAAAAABJRU5ErkJggg==);
+  background-size: 256px 256px;
+}
+
+/* dark mode: tile the body with a generated End-sky-style noise texture
+   (32x32 px, shown at 4x). Approximation, not the Mojang asset. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAER0lEQVR42mVW224bOwykSEpaO5siKNDz/194UKCp15ZEqg+zZpTEDwvtWhJvM0OmbduFlYi2st/bOz1/eDUfL9tbt4dZNx/Yuf5EcuuHsIpks76V/e/9dxwhovTj9Rd2EBFr8dG+WIrv9O0XJreyd3sQES6F4dOnxAz7c3rVy7A2rJkPTsxaphsR4RknhzVOTER4EtGj34io5qtKefQbJx7W5nRh5ZIvW9lhGV5EitKcWCCI1+tP+Pg9Ubjk3t4RukjGHpEsqmXYGX4S5cTMQkSeKBHN6ZPmnD7dWj9whlnm9IiPiIY197GVHY6fiU08rLFIFsk46aNlqVkqERUucNyssxbzceb9meWIbys7kty8IRqU50xprS+tH5wYlj1R74dI3sq1W3Pr5iPNmbWGa1icT5p93FEA9zGnn2nQMt04cdq2/bRpfYUd1jMlhHJv74EueAevv4S1Aqzki1kX1RLu4IqoIVI/rKEMQFfWSkQIqOarTyMiVAVQXAuQtWpcd1aC9SN9z7+y1DM+1hXpK10A/LgHYGv9kMv2CrNJtPcDxrPW1Z2A2XrXnL6VXaVMmsPaVvYTb9PjYNbKWWqk8rsMxF/rHuDVfAD4Zr3ky1qeyEHrh+RckUR/xm4+trL3cV99AcA5MSyxFsAUxEa4czpqE5DjxKJa1ovgtbCipLF7Ti/5glJz4qDYnK55Swt24T5IR0S8lf2EneRToaxDR4U1qiqsM6U1gVvZcaRwMesfyWQ90XiihjlrZRazDrQFzta7hrUxHpyYE79ef5qPPu7DGmsBNOIg8okkE5GIaLwAGIGZABLgESZbP5CoNVchTeBKH3cspJbrikLcFY4EoVDJ+IJqx86t7NAJJC1LVSlFN2EVEYVrOADX0A8+0fuJ/XAlrOJUlHdYI+bej0e/pZQ4ZCeKCUU8Cenjo1wLJ2INTnwQ2AcRof3lcjXrfFLjs1rFay7X+NL6AVmEpMNwyEnrx8v2Jqy5XFkLEb2UnYiklivyMGmumgUGuHXoK8QDwu6J3McqD4ipjzsICFqMadPtrIEneqmv3Rqz4JbQyBD6ABInNuvReFGPPu5b2Xs/grbTTSSnH6+/vuQHXiAJWINHsS2GjGgY3R7r8PJJU9EPoAqcGF4wC4CsTyYDoKETATNODNVCcPA9IMdaOIqJcgUiWQta0lr5t/0/gGIt/iqf0ROjybNI3sruo6H0wMN5i1QiwrQC87fHHyzSnHEpmn7IcHTcLJW1iGrBtJTmBH7QcNw6RqjWjxi21gyA0uYjpQTSQSGu9QdakPsY46EiOWsBwOHO3/vvLy0T6+gBQa7Ys/bOc/Z6nuUs9c/t/8hmNH0MdAA4hBrjBQgVVP/ESqkfM6vkUxFyPrU6JjvkAc0WYIBMDmvgBOCPzUkUE22o9KQJZjz6jbV8DF6gxpceGSTHGhfFpNzHfYwHMYdb8Ekk+zSR7Nb/ATpFGxBv6OFiAAAAAElFTkSuQmCC);
+    background-size: 128px 128px;
+  }
+}
+/* forced via the theme toggle (duplicate of the media block above) */
+:root[data-theme="dark"] body {
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAER0lEQVR42mVW224bOwykSEpaO5siKNDz/194UKCp15ZEqg+zZpTEDwvtWhJvM0OmbduFlYi2st/bOz1/eDUfL9tbt4dZNx/Yuf5EcuuHsIpks76V/e/9dxwhovTj9Rd2EBFr8dG+WIrv9O0XJreyd3sQES6F4dOnxAz7c3rVy7A2rJkPTsxaphsR4RknhzVOTER4EtGj34io5qtKefQbJx7W5nRh5ZIvW9lhGV5EitKcWCCI1+tP+Pg9Ubjk3t4RukjGHpEsqmXYGX4S5cTMQkSeKBHN6ZPmnD7dWj9whlnm9IiPiIY197GVHY6fiU08rLFIFsk46aNlqVkqERUucNyssxbzceb9meWIbys7kty8IRqU50xprS+tH5wYlj1R74dI3sq1W3Pr5iPNmbWGa1icT5p93FEA9zGnn2nQMt04cdq2/bRpfYUd1jMlhHJv74EueAevv4S1Aqzki1kX1RLu4IqoIVI/rKEMQFfWSkQIqOarTyMiVAVQXAuQtWpcd1aC9SN9z7+y1DM+1hXpK10A/LgHYGv9kMv2CrNJtPcDxrPW1Z2A2XrXnL6VXaVMmsPaVvYTb9PjYNbKWWqk8rsMxF/rHuDVfAD4Zr3ky1qeyEHrh+RckUR/xm4+trL3cV99AcA5MSyxFsAUxEa4czpqE5DjxKJa1ovgtbCipLF7Ti/5glJz4qDYnK55Swt24T5IR0S8lf2EneRToaxDR4U1qiqsM6U1gVvZcaRwMesfyWQ90XiihjlrZRazDrQFzta7hrUxHpyYE79ef5qPPu7DGmsBNOIg8okkE5GIaLwAGIGZABLgESZbP5CoNVchTeBKH3cspJbrikLcFY4EoVDJ+IJqx86t7NAJJC1LVSlFN2EVEYVrOADX0A8+0fuJ/XAlrOJUlHdYI+bej0e/pZQ4ZCeKCUU8Cenjo1wLJ2INTnwQ2AcRof3lcjXrfFLjs1rFay7X+NL6AVmEpMNwyEnrx8v2Jqy5XFkLEb2UnYiklivyMGmumgUGuHXoK8QDwu6J3McqD4ipjzsICFqMadPtrIEneqmv3Rqz4JbQyBD6ABInNuvReFGPPu5b2Xs/grbTTSSnH6+/vuQHXiAJWINHsS2GjGgY3R7r8PJJU9EPoAqcGF4wC4CsTyYDoKETATNODNVCcPA9IMdaOIqJcgUiWQta0lr5t/0/gGIt/iqf0ROjybNI3sruo6H0wMN5i1QiwrQC87fHHyzSnHEpmn7IcHTcLJW1iGrBtJTmBH7QcNw6RqjWjxi21gyA0uYjpQTSQSGu9QdakPsY46EiOWsBwOHO3/vvLy0T6+gBQa7Ys/bOc/Z6nuUs9c/t/8hmNH0MdAA4hBrjBQgVVP/ESqkfM6vkUxFyPrU6JjvkAc0WYIBMDmvgBOCPzUkUE22o9KQJZjz6jbV8DF6gxpceGSTHGhfFpNzHfYwHMYdb8Ekk+zSR7Nb/ATpFGxBv6OFiAAAAAElFTkSuQmCC);
+  background-size: 128px 128px;
+}
+
+/* blocky type: Monocraft (embedded in mc-font.css), monospace fallback */
+html, body {
+  font-family: "Monocraft", "Courier New", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  image-rendering: pixelated;
+}
+
+/* Minecraft has no rounded corners anywhere */
+button, select, .menu summary, .menu .menu-items, .menu .menu-items button,
+#clue-bar, .clue-list li, .modal, .modal textarea, #load-errors, #toast {
+  border-radius: 0;
+}
+
+/* stone buttons: thick border, top-left highlight / bottom-right shadow bevel */
+button, select, .menu summary {
+  border: 2px solid var(--btn-border);
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.35),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.35);
+  color: #ffffff;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+}
+button:hover, select:hover {
+  border-color: #ffffff;       /* hovered MC buttons get a white outline */
+}
+button.active, button.primary {
+  background: var(--accent);
+  border-color: var(--btn-border);
+}
+
+/* inventory-panel look for dropdowns and modals: outer dark border with
+   the classic light/dark inner bevel */
+.menu .menu-items, .modal, #clue-bar {
+  border: 2px solid var(--btn-border);
+  box-shadow:
+    inset 2px 2px 0 rgba(255, 255, 255, 0.45),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.35);
+}
+.menu .menu-items button {
+  border: none;
+  box-shadow: none;
+  color: var(--fg);
+  text-shadow: none;
+}
+
+/* chunky grid lines like a block face */
+#grid { border-width: 3px; }
+
+/* hotbar-style selected cell */
+.cell.sel { box-shadow: inset 0 0 0 2px #ffffff; }
+
+/* ---- layout: use the full viewport (primary target is iPad) ---- */
+
+/* side-by-side layout only; below 820px app.css stacks the board */
+@media (min-width: 821px) {
+  #app { max-width: none; }
+  /* the grid is square, so size it by viewport height: fill what's left
+     after the topbar and the clue bar (which sits inside #grid-wrap),
+     but never take more than ~58% of the width from the clue columns */
+  #grid-wrap {
+    flex: 0 1 auto;
+    width: min(58vw, calc(100vh - 12rem));
+    max-width: none;
+  }
+  /* clue columns run the same height as the grid instead of stopping at 65vh */
+  .clue-list ol { max-height: calc(100vh - 14rem); }
+}
+
+/* ---- toolbar: Monocraft is wide, tighten so it fits one line ---- */
+
+#toolbar { font-size: 0.75rem; gap: 0.3rem; }
+#toolbar button, #toolbar select, #toolbar .menu summary { padding: 0.3rem 0.45rem; }
+/* the puzzle select is the longest item: let it shrink, ellipsize its label */
+#puzzle-select {
+  flex: 0 1 auto;
+  min-width: 5rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* ---- clue lists: recessed inventory panels ---- */
+
+.clue-list h2 {
+  border-bottom: 2px solid var(--btn-border);
+  padding-bottom: 0.35rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.12em;
+}
+
+/* recessed slot: bevel inverted vs buttons (dark top-left, light bottom-right) */
+.clue-list ol {
+  background: var(--panel-shade);
+  border: 2px solid var(--btn-border);
+  box-shadow:
+    inset 2px 2px 0 rgba(0, 0, 0, 0.30),
+    inset -2px -2px 0 rgba(255, 255, 255, 0.14);
+  padding: 3px;
+}
+
+.clue-list li {
+  padding: 0.5rem 0.55rem;
+  line-height: 1.35;
+  border-bottom: 1px solid var(--panel-line);
+}
+.clue-list li:last-child { border-bottom: none; }
+.clue-list li:hover { background: var(--panel-line); }
+
+.clue-list li .cnum { color: var(--clue-num); }
+
+/* active clue: grass slot with the white selected-slot outline.
+   outline (not inset box-shadow) so the ring also covers the 6px
+   transparent left border app.css reserves for the cross marker */
+.clue-list li.active {
+  background: var(--cell-word);
+  outline: 2px solid #ffffff;
+  outline-offset: -2px;
+}
+.clue-list li.active .cnum { color: inherit; }
+
+/* crossing clue: gold marker instead of a green one (green now means active) */
+.clue-list li.cross { border-left-color: var(--cell-sel); }
+
+.clue-list li.done { opacity: 0.55; }
+
+/* toast styled like the chat/actionbar text box */
+#toast {
+  background: rgba(0, 0, 0, 0.75);
+  color: #ffffff;
+  border: 2px solid #000000;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+}
+</style>
+
+<style>/* mc-font.css: Monocraft (https://github.com/IdreesInc/Monocraft, SIL OFL 1.1)
+   by Idrees Hassan, a Minecraft-style monospaced font. Subset to Latin-1 +
+   common punctuation with pyftsubset and embedded as woff2 data URIs so the
+   packed HTML stays fully offline. Regenerate: see mc.yaml comments. */
+
+@font-face {
+  font-family: "Monocraft";
+  font-style: normal;
+  font-weight: 400;
+  src: url(data:font/woff2;base64,d09GMgABAAAAABpwAA8AAAABC9gAABoVAAQzMwAAAAAAAAAAAAAAAAAAAAAAAAAAGhwbEByBgCYGYABkCAQRCAqDgkCC038BNgIkA4ZKC4ZKAAQgBYJEByAbSPAl7NgLbgeAqtaVVzO2JdSD8wL8bwr31h1TGJwnmgQuv5f9/+fkxhDRd0FdrRqCShSq80FPVPeK12RqO1KaMlJhmZPpBmgKRE1v09VADsvWG5CZi3gEkrXPO/MuYlkpnSmB12RmOfxhu2d/fyt/D1jy9+vHHTLLfcL7GmWPEjdMy842dEjQzQbXPd+C/CdAJ5xt4rewMe5lwHYHgByuMJLFLs7G8VPQD3/uPWp1pUvGI5EoZHVNMQjNYByaJEJGpysTpb5FY2tn7xCTRPZGSCQyKdOruL6rT1+X/XEAdOTOhOIp9VbkCTxGRK88sM5m4eaXnQGGyP7w8H/v3n37jzGAQwtAEuokGPDH2lDZCq3pnm9vzzYzA2YsihQpANMQkpG1dq7v3h71dTa3RIlvjkokEkmMddP4kWg2sM5imhQKwCjqZSWAaelMM1caIcvyL8YMhzlMCuWnVH7TVhH++9aefIuJ2ygCzyxHhqdUTtxUCPuqBVYBcgCk+Af8tHC/QrqfcLGxhcSP6iGHHiyF5ZW0EhdCmuVKq4oGh67GOLy/XmFpvBdCnBsupPznv2AcMOOQkXmpXurfyJCoUD7K77v31V8qpnNleg3DpfR9BTiUE/uh0hazOztzB0MQ4gAFoxAMBoQCyIG0TRv7RsoBzd1YG6EG//9/9OM/N4wUcGJvOHefP74H3iT2qWYNwyjiVNNAWhmllP9ls0y7VwfSmThkjoEqt6PIkRqeerSj3lmavdLiAUL3/HHdzEiBzmZtZACO7xxtaODQsYPUnDp2FhEFiSGzxSwWITVBIyTK/mf+aEAqhJfXdgmLk8ZLmYgWRCJwQhVcfPYH/+Uk7WA5QP5J4alPe1TYGa8uoBQ+B1Kq4Y9aOk8eHOJ+U3aINJXnXRP5Kzx/aqqMUo4QIvSp/T+mWfCqNzq09mXcQkAChHwR8cczSGe8IFuTqDC1paosR1g7SYR/PlurVCBQpgs1i0ceoQ/x+2JjpuvfuSh46dJmkRB1Vnmy4BxL8UWOyNiHCllGYGBQgGIPkIAs0jMiuL5ehCfI859Xn0B4/fXpDQgkYjIhJPz0+/U7EF7/Pr0PGiJAQgbl4SdIIlHDwT8g4GY+vfVh+P5B88anjIdVMEnJqEIJ0tJMfr+f3O325dF9DERPXIsPValLJa3p0yJwyHkbnPOI9zxqJoFoUpG2DCU52dHPRmK9VXusRZ1dFho7zPDbTNBbjLCbDJAb9HDrdFBrtDCrNBAr1OTLVKRLlGSLFCQlcvwiGW6BFC9P4mk54SyRUIYQnSZApfD8JI6bwKriGEUMzURRhiLI315p23359BkLsRKAbjWgAT1bwRmHvOD/VEsgfTmRjyWCVlRbZWqhnpuLBbrYtm7ptX7uP1PjmbqxTWnG5mDG58sqYVvbpla8uvVtbtt2ZBd2Z1u3f8d3XhZC1tqaS9bmrLRjgtVbmdaataQVsKQzY0HHb0FjWtHwKfgpc3ivOfSkHtqjh50wg3WbQY5LSJeEGzOFc5pCjeqgHDqYERMYuwnEMELYkHzImNxqTDooSC2CbMCIzGxE0s9JTBy/zxDfaOjpvZ5uwOtxg6fHGEjiVIHD0SEhXAErrEVcqAxGSIMYugQarSKKKoJCKYjwCyD5MgJuHgRXgq/KAVeJ8BQAMIUAl8kCdcEDwj8yOkghnjZc44NdkYgDsaEmLWhBDRu6xTWf+V/eZ1c25VF+q32VK1BjdV3/+tj5tnVbb/XncHHPJEYxsembrXmcL9sIzwa2ajUb2MoO7NIe7eDO76f9P0oqR3BUx3RcJ3TwQT52llNLLUxrvWbpc6nG3t60vVTsMbO2kqnRtzNpJ5EadRtzNuIxLtI/lY9FhHsmHY1w70Q2EmHO/mQ4Qn3duVCEuHpTwQj2dGYCEeToS/gjsN4190VAtWfoDf5LHSNP8FeoD9zB73G17/L3x6em88L3UaXlCL4O9hv24HO7+2kLPjZ7H9bgfblztQRvi/eLOXh9vL1MwUu4A893jOl5Xn3aMaTnaem3r7vJ5pE3RvRwNlt3o6397bxK+hmpw9eOW1ywJTwxF//SUF4BTejebDjgom1u8pKvzaQijnQlkPI0pC9TWcm27MsRjjNmSNvWrVXtbdLZsNBYN8OvmaBXjbArBshlPdySDmpRC7OggZhXk8+pSGeVZDMKkmk5/pQMd1KKNyHBGRcLj4mERoXoEQFqmOcPcdxBVjXAKPpppo/SbLqupZMU0uhqEItU+7zXZUTZMaR+b3aGDNC3+IetHrfksfbbyi0VdTZZaGwww68zQa8xwq7ChlyBBbcME2oJBswidIgFaOTzUEnnoJDNQiaZgYQ/DRF3CgLeJHicCXDC42CFxsCgR0GjRkDxh0Fyh0CoBoErBoAx/UAN9QEZYtEYPeO58Fm1WbHjgY1EDZ1wrz16YzSmYzk240t864JnIQ7SSSaTXIqILql0CqiiEe1oVN9M21xjj3t84k+5/Ed3eSo/S6WK1o9MdnSiC38/Az3Xe93fy/1vujENMJrJzMScz7ddbmpt27eXh0vWnJEzdN4fjafhaXuen/ln8/l1hdZdzQ3cqqu7idt3d+70y2Y8L/Da3q737G3+R1Xst8/3z/7Mwf329czCv/mPO9zvMQe96lO/e/LxjuQg1Y2d4/44Gy9zTc7P3fPF/F5eSnmdXCdQogtHUUIbhrCAAwxx5bR9Js1Cy3upn/Qpv/SPvaZndtV+uK9DGXWMsXganwwym3iTfRzjAnfY5JIPiTSwLCwgC/NwDuVJ3hwr28PuOmfP1mncMKfqHr9790ev3Bm904YO1NRUZ32UloVn4wGVX/urp3Zq28oO8at6dz9vbryzPIIfy4Ll/deTNazd1hdNgmIPEIYiCCUAVgahcqtXDatp1puNzeZGs2Wkth/ZT4FCZ5l2uvOj2r1uvzuYUBpOgspooKnUxmSJUBoTZha0pjdIlM4M0XpzxDFYIJ7REnFNVohvNo0kFjNIZjWLpDZzSG43jzQcFpCO0yLScllCem7LSNNjBel6rSJtnzWk77eOLAI2kE3QJrIK2YJSGKO5vKI0dfI4e0qf85fSa/mt9l7/UD61L/Vb/4n8xv4F/28cqEHgJkEaBW0WrGHwpiEah2weqkPoLmE6he0WrmP4rhEO4o8SzhJZSFqSvDRlRerKNGukXSvdmunXzrBBxo3ibRo/LiCEzHAABXIQCbMIjfKYA/cQLtJHOWkvMwHNwCkkh5ZgZXgNUUcqKA2tYnRsBBfjonxcIERGomROIVVWo3XecJgey2X7HKfr9SaUGTWl5fQSo8yssepshaNxVZ7OjwhifjSIh0TExFTCpWTG5nTBl47KU7saX+vrXoVqVZioZ5pUm+tK+rKhZqybFLNmUa26LWKPDdExPhEzs1Art5E7e9Anfzluz+N6fZ/zH2EfmURnsTSeJ0rJcqqWrmeUrJZT83ohUowdRo/ix8QJc0qdcefkBXtJX/HXjhvPrevOd+97+FqOsziLQeOHAPCxPzdmgVTMN8oFoL7wnZjyS7/shx747/9JnadnOCDEuDURkEMUYtB638YBesqV/Zl1MjjIm0//Q7fpbWab5x8cuutyKNt0NhPzt5P/Nn6tz3qrl7oRio+n4xOhed8Xom8Ipi4BjR3I1bHI9b7S4zm5Hc0NgICt6rb9X3TABLxPRGqAAmrYtJYjpvDavMGekpsSBVGl1L2WoEKdE/YNaV4+meI/rfhUSXy4KoBnkDQBWFZFplcCELtcrHvHZUzDzHKwobeMFLv376kBi8tAIhjhO0FhqaFjA8dCZdu3dUSXQeV6D6yb4vbRHDzC7ZwlFjDzrxXn8y3YIbzA8w0AX3e9lMWmADscRBd37FNaNS+bEhIWHqIeXvavhfaLFm9oCujaVXM5gOy28j6Ug6576XU/CuVbBOWJSVwCS/6P9CpuNL6c+8evc91/F799/9dffvH3jOBYttmiOaHZsGXHRk7evVyhioYO4Hx99OrT9/8nSxsHh0fHp+1XT+Xnl3spnym8rHhceRL9QqeOEI7Ayx6SN1YZEl2OB5VsRAnhecV2tfJI+ATd3wuNwqANs+AIV7+bDtTQyHRXSxD3x5mTg2ncmQD6Jg7qNK2rMYsmb01I40Wp2ilYoXS40ARhOBPIZL0wLrLm7ZhTXVsHnCDjspMdfWqw0omgVJc4rAWOKdsHW6EqCMsYMoe9zd9QISyq54CandiMnGneQgoXyL29nkGcVDUJoQhFZKiWvWNDCSVIEDIqEBJDS27o5QIOGybIkSvu1rA2LVIX60MxJ1QtDq5QOvqbGK/A1FR+UHoJrhsC4ap4qWmI0Z/PnEoOjlBDK7dIooqzwjM+46UsNx5rJImZA550OFeJZarCgnib2eOQjzenRI2Dln1K3K0IuU81SU7Y7peNgK+OkkFCyDAaNEjYvAk9sSg3tCjCBE24IYcnPK+GSitQkrWOmVDaTxm24iLL5OI4IdgwFxsTQFbRHC0gwIMr0wGvBmEt+MLdsoZaPTPkMewT1ouKxX5J8Es3BMxO8r0edzFDEjtZUOPUG/2xRNW3SAtER6XBVhq39F2oXGNYVojRK192RgfT3OR6E1QZLr4W3L8EW+vCE8u0itPW4i6w1KLX4Yv3MbyOei1kKCvDJ2OvQXQeRFYiAktW+8mhMMD94aop4wISjB0iSyLCjZZ2B3vdHcQCq1rf05XBYivf9hgOhSOhcCDD/sRrUb5Z43OKt9aBfQDTng/RF5HGDNqKywZPa7ThPqI4fTKli1or/bEV4uLF3k2Hw926i+4t9qUTndP6snSPFW9D0irY3oeBHEodqk3I1o31+Ajp87kFMMq7dcWGaeqRLr1k93T32MCbbNkRY5CmfL5q7V1oQzAxZ2kgSLVVtXqe7sXz1Id068WHpURAT3dlxUMstAo2fHs/AterGXSu51BsawnQaj5pC0N1QlqETYVFP0IagXYALLqkLjtUaJ6CkYqvdWgZcJZIZdokciZXFsmjTV1C2DnhzVCJZOr4k52/wBeChR8eDxCTCthzUy0IUYD4PBC3UGl/ws6lFpbHxPC1mhOygZG0TA0Umgc4NF/r0DJATqR3eI2d6DJEGi2VhRrobsIHbIIFZJ8HOLQulez3nSoCHyEXi9Zbykgfs5OMVQK//ivWDZJr4KWUAAItxe8jFLdorDTFc1HqZqjWFZWxmL405tqcNPtu8SW/gI8k1xBSAg9oHe5eDgL7iQzsRrcc2HMLZFYIhR5VTGCKQJtMxUQ1KWPBF5qHLzQfX2gZvpA6Km2xeyPod5FLxcj5EESTmQBcMgNYhgOHlFbRnOkU9YUAmqyyp0WDxcFkw+zz5jvxNmxEt6dbDMy8zJ7Pf5/Bxt35hcqOdvY37jtc/JRwsJ/uaGQWwSulk25wtujf+E44OYYHdrpjp9/0hK0cdz92ILnJVPEQSUnf8qG3NweXwYH5Lw7txm+gdvzGWnRcWbOffiMs/MTH70sz3vOtOKB1LBzbxY6fsOxRrWjRJxNKi7OtOu+iIgZ7APm39os/+S/+U8jvhwixFo0NLPSvI3pbfuIX/yXwex6isnskFKI6sAVJdPV7IkpQ6+XfQ1Tg9z3k/hajrRo/A1L7TwHxPyjscVDOauvqoKfSRzt6e2h3R/vsxsIdujV1zzDs4TCsRPAYZkK4DDs0fKZH/MOrkcezocu7s89CDw36uO6lST/rnprzpffWpD+9x2Z96r027VfvuTnf/t6b9O/fYQh6bNplGPps3mkoepl0G45+Zh2HpKdp12HpW1Nnfm79cb3azxffu+9xghlOfGaFNVY/pvOGd4Ltyp7xQtlwpe+41Ldcy3v9wY/BBZ/BCa/Tzb+jwIa3wo6/xFYSjb1EIpvJVHYTymwn1dlPzGFgjvgswJOfibmaYGO+ThiJsxpW5K2JOU2oPq6bMUYQbQBaZuM01liAtjVoyf4b09amSICHsiJ0syyVgwatOU6pNTugvjiGM52GxrxeCdzjyER1TNO21NtoNJsqFuQboySQAQngZJCWFyfEXjOrJVz08N1IBrDzMpYafLTS7rCF7hniJUtVbDPhMv2XZGUEtJFQMhUWgZLHnDIpf1YcMTm6YcYR/dy+cdtyHFPgsjEE4dPPHWMOU8p6QJW+svNCIMiYxvjm3a2GNvALY/sFUZmYzCjU5iRJ6FQWHbWW1FTxUPexOFFxeHRCvx8WREpTUBhn8crWae+6qMgEF0gTTjNRKdMTb6ZkotP7+AgeSrRlGfYzGG61LUUmOlgeSepZ5syu4chBjxSDdKT6XS1ijVJi5EoR1htZZgo9M7mbwF1Apw+ibJRC5P0UEtwIH9oVAuJk7B9SDsjZIZmg3tzy6xRT4jCq6y+EP5CTR9QCE4HmJ/ATA1o2qSLJ0uD/HWsiAQH5ZW6axXSoqUiD1RZDzLJ5URJ9X6vhnqU2MNQMwjUkUqnRw/kNqe/W4Y6dn6DRdgXO3zWBcQYBunnCwxmsiyHA3Uhhc6ZqqRQ1+Rq++RGkzKw20sZgSNP9PH5gBafhqI1ZKk3ox1LyBY5wPEEXowzKMhaOlxFy6N19Thf6LAmJermg4C8nQEO8mWNZ+RA2RssTPDHpbYTcqpcszVEjZ+u2BqHxGbWHDD854AEf5TjlSJLZf7ON0zLN9TPbm2psk2wPL0FtAULuFlJaGSvLC6Ix0my/NAJqJWuUiUa6fDu5HRSam3N6xu2hbXMR6RlLVCD0wemxVp0gwdR+XNO2xrCJl5F4iRu/wITaOBISTjxDcFvQV2anc0C9vdGbmLxONPGr/KwA+NLmIDGLhi7z4PJh12GaLtK7gySKOjOTNOdq8STMqjk8Mlaee4tdqn22Ke5sLIk0Pf+IU/6hbqvJ0stLp7fMAmmdql2pHidVNtMYqqqM0cK3+7w9fcDpRzYkTWeiD2KIJ8DFo5M2JeBsD9KRRBfizROAEp2rR0sKKdjEdIIdHzKVVfhAiqYNRnpB8qWmEqbvYXyiBeTEk9t2mzifIjm9MINscpl0nfT4Q0AQ0pT4SeY1CtdTZspql4kJYjMBhGxhjhzrNIw5T0kvKDXU7TZh+h49SztZiD+AiCa5nSJTmE7tHXBtzs256QyP2FalFyT5TgjNsOii57s8+RfN5m9ykFk7ey4qyg5sNgu9pdBnpCdk/li3al6sk3K2lN3ELEgtosVukAiXfJZJWdRYeMYzt1/OExWtmz+6I+linU4XAnl619OPTBngIdpI0mzwgjK0O/useL6ko+zT3zDqbhuQLirnX11UbNEq6rba86i466CGDuV+IwUHDgp5E2RM2zno5riXrj6IJzbNA683b16yLt+AydtaBx1d1LpLg0yb9es/C+cgTe99sNPc8PUUb9CD0Sg+NW+pPhp94qCqw+rqQwkSJ8RhUvoDg/JfO3HQUPT1Y6FjnV/bxUn6JJ7XV9hNt43r4cdz4CKWX29uq35nloe2vf573W7GDae7+nB/erY3fn7iQemP2wMn8Yh/eNzr0to3DuJzBeKaUtup4612RIGwxPDvEzKFdv7In9+3P7LdAMgFGkHekV19rQpvR1HllEQcWuUnorx8KsMOrdrtUftw6k8dWs3Tonn0tODQaleoxNMJdGh1v46e8emrOLQGB2Pw4wyXHVrjO2LcfCYfHFqzC2N29cyPOrQWjmXhWSU6tPQm1o4nNHZobV6MrcjZ/nBo7R+I/fA5NDu0TpfH6ek5X3VoXRVXnFuhQ+ve4xF4no4OrdfdeKucj4hD61sZ3+XzG3ZoAzwT8OECnzq0wTIJPnohcGhDpxOWeOGBDm3Ei0QaX5SKQxu9N9E/LmbZoY2LTFzzxX9waBOpJF69pKMO5BMJd0dcgQWwAJY3x40ZZphhhhlmmGGGGWaYYYYZZphhhhlmmGGGGWeccca9IEWEhJCHeMx9wCNO2ud/6+i9+eZlnv+//5/z7aLac8NwuzirDZNtIFMbGqC1oQGiDV10a8M0u7irDaNsoFIbGvDUhgZktKGLaW0YXxcvtGF2XezVhsE1EKkNDVDa0AWjDfPqolobhtXFWW2YVAOZ2tAArQ0NEG3oolsbptPFXW0YTQOV2tCApzY0IKP/IXf3+413zzL3Zc4yCBsyyyCAzDIIILMMAsgsgwAyyyCAzDIIILMMAsgsgwB65z/C7XkTZj6Z6UvyL1Lam2pkGlRaTDrV6Z/NKDNTOguSVXfCu9lV5uiZi0xu03m+yGdv/pEFUYUwhVcXdbbYzGPdE+i/ZHoOAEw/AR4KOFx/rD+5IC1xUV/WD3hkMeSxJYAhEUAMiwRkaEQwwyMLWFKBiGWVCFlakZjllS0EYIgKQa7DVAm0DlUdmB6uUkA9ZKWgetiqgfXQ1YH7w1cZwD/EEATZNcwwBNo91FAEcwk3HAHdQg5JUNewwxK4sNDH+/gvlHeY9zScRzrAkQWWWFyXebG+4qVgDXigSDjSZxzqU47FuX7gxWCCzWCE1WPm3RNgQo/4Mwj5U4yF4RDMRDIajkU4Jw14Vh51CEJTIEl+GibKT8VkfdABYSWUTNoPLRDXRP0k1+TbLO/Qu919Vfj//2t/hvTNrw8W5gJI/zWcl+Zmyjfy/++N+3XoVGmGeK8aX6kHdo+Pe4PIjjWFedFTkYHncSAIAZ2b0QwClEH3U/Ojm5vSzQWy6f3nul3vRPelHIviliCzb76JUSfEHv2d4T818iC5YN8C4ODjuOCkC4bLz8mBwjTJXvA8G6yKz2ZG+bOFjIOs7D9bwak/VFobp3WZ0F1sPEkkULurT+rOI3Qohabk/GMmeVj9OAX6TekzrYNBjlHDjPPFszmi87sZZlSCURHm07XrMfW1c1m3XtOGdGxCoi+ccs0JvfbXJyJkiUZxRs3V1sb2LFgTNlXldNNO/LzVEyb171btbdqy1CGO/PZNPnVCBAAA) format("woff2");
+}
+
+@font-face {
+  font-family: "Monocraft";
+  font-style: normal;
+  font-weight: 700;
+  src: url(data:font/woff2;base64,d09GMgABAAAAADzAABEAAAABr7QAADxfAAQzMwAAAAAAAAAAAAAAAAAAAAAAAAAAGhwbEByBgCYGYABkCIJmCZwMEQgKhahIhO8BATYCJAOGSguGSgAEIAWDAAcgDIIFW3mOcQK9bY8Etw2gwmhfxneYC+htI3q4bYBU+gb94wo2rmTDxgEAX08Q/P//WUmHjDH0A+D/NdMqpNDMGZHCynQJYfTw4piVizkO4coQR/exJGKYVDfpJ18ylZEXBDiY9t5s925jLirLTE02txIKwkuz3u770arBx7mxXKfyaeps9vv8hNuIRCInuHwl9NjnPsBhvv4jD4xSSViEWdkTLt9+/jRPOBTCdeLlXI4UCjHlvhv5t7sMKOPWA42sHHeTJ9+fz+v9c28ycKRJMlLxZKXmtJ/gilx+77St7H+t9e/p2zzYA0v8APhPCDdAbsJbMQ4YNDsEHRmho5B836l9SU6AJMfvCAugR7idNdreGnBRIGPofYElOkZhAIWuBR5KXSOmlslZ1/+1qd9hMAHKwHeyWSYIMG1jxr5OHTs4p2mHcjuxurqR1zPqpIA0MubEOQ8AMsAUxb9VttZ7iNkWw9zLdhBjzUW4nX3lfJwytM6jXyw1bf6FLMLn1ePliREj4ouKWtXDHnqopivSns+Tb3MnldKAAgQLAOr/vdP8SXNau6zE7U6yZC3LS3bQE3TYkyVl0VpUilYJdZ20dbopqKiWVULdEvurq6JTjIsqW31Enofx11sC2GWMYUB4is0fG+gb2SaiITMiVDwTehPXiw7OC61ew0UHAMExwt0Q1WfgNZJlHNDqK8BoCsxtQzREKiFbE9fjfsQPIQPPs7F8+Ac/UWYpMmkL5fB7daUcwBJIgVEmvM8O0IGPZilh34Y0QenWd0W9Ra2qS/fl46KL/75qvefmF0lpNPtDiE1jl8a4Y0k5vikXQr+gYzcEoabf/fmz6XbzaLrhcIj/eh+868abjusGDShMvFEHSHFgMQQagAQVf6+cBOQHDFuhhEoDjGCp+srunEFAIRhQ8TSgfMEjZNbi8Gh4/9+1T/vm7xbSU8fCABrBsuzE/pd5k6X8KbMw4JPcDFCJdXVrdM9aVy2AQdNFiZ+qUtqdSWzIn9AH1c0YgkVq/q39P1O19s8QFAEFm5fli9JFOoXXx9zU112F/bPDDbPLNRcEiUBQJCDpZEg6E1Cm0i4GhBeEAwg60CnpQqLklEk5yr7kmMvLRZNSlULRpKa7XNpFd6XdtNdXNry9p+YndkctGHa20kayVxAZD/9OX2k2U5IW4gxIe9y50SSkh8e9tqWORSD7ek9QDcO1eUX4Ybm2edIWMknwUotlIatjqIuPtrNu+BAPUcthNoGpvogEkUOOR3oLSSEe+6X9QhLtkbRxDcEREcZhOOKVvuv4rO/8MrEHJj2u6eUKoxWvD60qjDFOsl+FsOG8/NxIXUaZ0PNzIkfc56WiaoXBhNlE1P4f2/sH35jL+CEmKvQFL6DLSUAAvL68MQz5EvJVk2trAG5efgmuX4urAz3cfHAB0cd1F0cliSxfIYGqTXx/w+HJaN+y3Yd8I4k6Kph9cdcriBNa+B5cJNmhj5Nb/biVo+5Qr251lAVe3yLodN/Av9+nGnl8hD8qYHvsSSJj0w5t0J12YHLn8iWO+RZ+q8/5hf+5NUhRFUphF0h0iAH2DHq8i3P1Orotrot5DR0Rr6KNfwUt9MtoYl9CA/ki6rgXUEM9jyrmOVQQzyLnP4OM+zRS3lNIOE/C0Z9ATH0cEe0xhJ57VP0R+GoPw1N+CFbpQRj5A9DS+6Gc7oN0uBfC7h5w3btB/15VDuAj/FMVu2MfEtsa2qNnTegRPMOP+pZrI05Q4pB4Nf6SK7dkT96cWyksplpQebVLPVgHJayANO3VNb1L36kFQQmF2236xm5SZsJsMofMrT3Qc73VZ33fqIWtZBpM/sXaaJsu1rRq0aWOEbWFrqgF6GI20REzj6CIDbRFzEHDD9HCz0JFD9BEz0DB9tHATkNG9lBHTkHCdVHDjSCiOqiihhAwbVQwA/CIFnJEHxy/iYzfA8ttIOV2wfDqSHgd0JwaHKcNik4Q01sIeL7q+SatgpDWgI9SRkCpw6tegq9eg0etCE+tCrdyAVa5ApdSHkYph1Oeg5ZncEgxlDSF3YmGdEpgc6AgHBxIuyw4KzcG4SPmR5ihDrfjq9jsbHY9odF0Qnf0rpk9lXf4vX7voSgQG+L+uA5XRmVR5uXLiTJUcYXVLvVwnZRcTD2jE3pFX6sJnehPuP1mxgRN2WwweXN3T/VOX/dXK9vel4fb5lZo1dZs3RbZFtZx8TmhZyZ9sVn66kQ4d4xeKr3gCK1k8EeyUyJ4E7Mb8WD9uflYMPbMdDRod142EpQ5KxkO0puTQ0FYM1KhwJ3+TDCQ0Z0IBCajeO9wfwhFOwf6olwp1DfIG+Vyga4BniiXonv6u33oRY2ero9yIWp/L2eU83i8QI4o5+C+TnuUs2BPhy3KmWC91RrldKDaYolyyqs1zFFOOpWaKcqJbHtijHI8HXO/mMKXj5HyGgOIhZ/XW70z/FDbfAf7jQxpwt34JiYr2AH2NrWWQJjy9Kr9OM0XeJ7v4vf7jiO3hlsMhVtQYkZsEYfEjdERAzERc/jhStMYnuV1uZ7PPcU8DCLuevxNh7602FODPNS4XYXalJhVgVjk/FnGnSTeKHIGgd7z1I6jtSylYdRrWq2ilEtSqSDkOS7NMKcUdUgQuxjW1ntZeP9+C+3UOoMQ9vtbhOIpWNR6J2wY/CVv21rhh9TFsiAXapn6uMyYerjE4N0O7bRYu0FaNc6sUEaJ0QuElvPVjKsknhw5UqCLnio4Gm8pnFFntRpWykgqQSEHXMowJ5o6UMSOxLoEakDk4LJarDh9Ws1yFCroOcCHdPFbckQqg8PTH7U8b4BHKKI6yclMbopQD03RJsrT3TZnZ/ZnLue4nVf5Af6k37o99Pu64ddDnjEyL3rNPlNdXy3PTdVGXRQqbYUkaLOm9AZ9s5b0Klfrr/9/l3m63wfT7tkj+/yQzgSv4T08hVM5zdO3nH7d1/pBv+xv8q9fE+tsSTcdzARUsCt4fN9vz0mGjfD2A0/gK4nOojc/6y2IvXEs7otn4i3x0dt1F+7FFV7Pj0CVUGPUIeppd0/haNI9dJ5+M1EyccwAc2t6y7JXz2ZvzNqygWwm28og+8XqOcDNcwVcD7eJuzVfyd85T2HyHfwe/tkKEtjMA2GbUGGc9xu6mO6jD9LH6bP0derRz+kvVDBWk+ymVCB1Seuk6+sz9VvJKIfJFfKSfGfjpGFWUpQh5ebmhRLoytQ96vutoxZUn9U/Vat6eje/qxVpXdqKdnV7rH2myYNswVJwKJgPvtz50bnCA32L/mxXaEQZA4bVBj0cyQKYY5UuEEwHDYhRgpnKuHWWbdmR3bgHlv0CIjjYIFQYUqmRz0CN9URPzd6bWVkQtz5soMIGTtrCKzskbY9sHNBYR3TOgtY7oQ8ylqhgSyrWTMOe6yAKA0xpAVVZwdU2kI0dbOsA3TnB9y48Bjc+owevyet0s8/O4r/V5Zzv5b1+b9N9fmzP/ZW8s0/6zX/Nv/vLabQOQEQyKMcKsEQrOOG10FCaUktrix217+Rv4RW/0lA2li8Va2VQFVWHNXFtUVclkLQorj0jOCMoySlSs4a2vDO8E6zoJTO7OIZrfE1f82SZrZtttyeOzJm6cnfj6Upb+0Z0ZlALt5Ibu9MHfxqXc1uP95qf+5/spV76i6fcnN8KezEpZaZyWvKu6buhHfuJmJmFWrmN3NmDPvmLcXVu1oP36D39Mz2vEOflvr5v3/dJGJjhhnacsBmX8rnQiJ3Uyr1CqIxG6ZxBmqxF27xjuI5n+V5ghr/oxDd502825XOxlXuV1FmTtnnX9N3Qjv1EzMxCrdxG7uxBn/xl3M5jvd7n/YUfh4Ec+NaOIAH+axiAB9oOPILiWGXOcVxhjwKENz2J/mKc+Pe/Dlw3+g25AEAAAP/kcwCYTACYhTaHgKRB6itQKP29PN7A/ylM2Qya8StXzFefxFv9cFMyNc3lWcgZOZUuBfPBbJDgn7tKvHgaIB7v/f8nytA2OiL5qhwMQQtZH25u49kD9lW8Mi/VKda+sO0F5ThAjDnAo5K4KxsXNlRlGVjLp/TWFLQdH86+2PTquZ0wvlNb/2fWSAES8OyHSvTuAPP376Aef3hs7WDuPWxRuvIN5PHQYBLNlDesc8A7IB50CFCQEozol1sliOzYleCkdpuvXjDSRyYKQTKt9iVPjwikLzNCYCD1YwtxN+soyxQEg8E1py3sorXi/BrVCli6LKxopmLgzm9qVw3ZyCAKeEJF3kVXoco7PlpLLeGzuynyH91cmNNwOoQqvAN3nfz0U4U2XRNxyV3PKL4u9hRL9t6VshiILeYsV0Z1dM1cM4DPBtEWpftjDTwjCGYfEvFKc0cBO19ZUFULcgSaAg8euIQnEoEsaLe4exkPHKbA+ziQqFXbqGBJlQjo84iqWLSEJA0JwmNL0Go8tAmMiXVOwcoSKuxRBymfdS3UCadt2WlgKwFb3gOQfTeUECX2mN8pUl4bc4h83YfGxol6VqeE4tGDJcsP92lrJTRh1euQxRvMYGvCBMQ9RVC9BdYkoPualCWhLow0PRCoR5U3VZQqYmFwuDOPnZ2HhvLQZRD4/oyyAmtJlli+PQgPNEyjitqgu9iJzIno76AIXALcldZgrJMTDtOJqWUC6REinNiXvh3OYqRovLPs9KErETNTVuBG/UAJx1snpGK9HUip5E0UTkkehEsbJDG44NwVHQg0aVQhUaB0LenJIPBdpnz3xWfRDvQ2wgHPBMjmr/t3n187rZObsrY5M5b7X/W0GAJWCZKkU8uTS47fiFsNbJ0J3KOZw1gM4ZLup/EHXN/xfLvKsjAghbPzYEWsMRwUsUTUyonlNjNw4gGYgOOOhfD+nFVoMlnxxSM1oSEiE4QGWwqF/fpmgSVzzogIE5B/aWBVzicTHujt3NISVWas9UivlZRBnRI0KIcmFdCiEtpUQYdq6FIDPWr7FslpmBSqfPfFM1Vg37MmegWXOrVUQ3/7Xm6ZCQ2vtD4NeqI7H6zafUXho0kGJJIhiWREIpkikUyTSGZIJLMkkjkSyTyJZIHE3AqpzlxYLQyol9TnuujHVmevuVK6q60Rqwmr/TB3nURjeVKzHOd4gS8faFoWYEN9yeZovCi8qbDezzKsDf1jJWtvhqlsaG6L9IJAZptG1Chcp8ESJqn+HrG+AwB/yzyXt8Ia5Stlh1TTmEYCEEW1N9Euq0t1ib0+x4MplLnV95kJ63eoCinAZs2iN+n+sbF8JL9hV9/VTbq9ENbOP7SFBwTWUUudwv9Z97vOAc7hq7eZVoyoTnuf/TnsosruQigToxTh2rVl9eLeb4t4PNoinx/fVllxF3uiNDJM8CjQOQlEAlc9dXe6DaHQMqRi++giz1tIhY+SpsnItHQ3OY/inGV4GoHcMmdjBjpavLbqKmFUPrX0CGk9BZF7Q93gBV9RPS51TR1HnBgkxmUuElzPjbQcx+DB9BFwdExmxwmETUplPCrs4clXVLOz2qtJ+GzRsVN5s+rNVxg1mtKi50kzLfc7Tn2yJPCzGZ50Sk69PdaJgqxHNqP8rmvyjZ2op1qrvBZWe6r9nnbciW1qn26jbMPP+AziII08+EziMKX+F0vtdKa9PgVQqrC2KM6auim+HKgJWBIRmIQAM1Xn2QVU8ZybwrOZvVEXVDy3/yvGxYzUcD37xJrnrDJc2cSd4gVvHxZ22DF8zeg37vjESWmhIH7rwuPvdpjp+jk5bHp4YAKLgsgoqp0wOz2kNay5EoX/cPGKqaJR+jqy9kaQ2Q/+VDui6GBaAjEXihdBwlRywLSScqF0EWTMM4ttGGj05FIo3wSFUMUJgyilULkJKuFddU2za0uqXgQNU80B00bLhYQiaJu7g48md6+Dek3QD/dALMEwhUZNMA6/CTLqSHK3YqrshO0KzYjdnAefSeLQFwM2obBsZtOqmbDuwZJ1sgktia1kQuwO7IPs+QccmgnHZhpialkmp9AyOYeWySW0TK5cwK2ZcG+m8UDLCnmGVsgrtELeoRXy4QKkZsK3mbkfOv0X3IcON3QKmfzRs7NOVXrQCBBjM9u02d9reGJfLwBAnxgA4tYA/m2gZ9nA6IK52kkZuLVvhDk+vYEg+0uaDpiDuZm3aYtCcm7mA0vcqrfWzsOzQkBJM7HlYIWU0OK4hbbVxjkrxBKXXuhIBAhSTdQhpdwOk/5Kis+Pvi1DUZH/qdWISAd3cw4M8WFmrFa/ZHfD8sA0FECnzgTeShoGJpHzsb0xmoKMh9rJtnNnNdIV9XD5MNXX/YnXKr/bjIrq6Zy6vUOxrZw1rz8FIGznBrdSGm7n98jPWdio8/u73nAZJlw3Mmz2L8/bRuSo994YucX4G9Gxf/B6KCgoKIUT9/F669nL90epdEJyOnEYHNe6Ct1fr0Hq5kpMIPWDLv60LRCrlpD3l6PP1YHmmze9U1tNQxsXH/dObUGkxESjJ5ZunZltvp70klmyS27IN9EQNy2aLapq6iq3Ng4uHj5u7RqaWto6go9IqDTiwFxoVmkh0/AWxs73/rRIByrZDMMMaFgJSo4iOUiteh1RFGAL4xcrGslEHFqd8HZJFzAnIGrNz4IuTOq7JsJnj4odk8GRwhU1JgDuVczW/Idgb98ul9QkybHQ4rPmO+/wEEXPgAoiBGiFWIUQb71HGkowi+1kIxlz80ZD9Ets2rPP0c880JXise6bIy4Jas/i/pEPCHhjBqwdL2HuSjLu5FlvhR4QvPose8kX2HaBHfyKYMAf7WcXmNeNSH1hHjPfxLd3auEdqoiXWr0reg4E3MfZLoa8h4gdT6ip10g77ywgS5RgYND6Y9C/1DV4Y1TGSpEopemieo6/UrtjCa9jjKIcA1HtBgqtEpdCg8F7vVKoUo1eTZVypFM5xEIU8Vu61ir9dmi1wgR7sDBIb2oYLSdLOff/tn4ZEvrF+InB8lTgj8jUnoDCUkrQoEM8RqC0UFkwpinqjIoEFybEE1t80IjKmdHDkVMmQj9PEssdT2RXaTfh5JftDNxtt576ebsdZ0mWsJ8s6ZDxjJF7I/oRWTjIOEtKdCQN09gzPUQMAvOu/dplx2TjipX5bfFA2PG0Uj5sDgRfvJh3GhaeDI1seGP46cGkQID7FvaQoQ/IjHPhDRnBdVmK4pWCndcfweTjqfJOg/BWhvQFlGlm6raEFoKyWhItHXx8hZyMl49dK0dhGWkRwlzEPivKsVvpKBUcdw+18bMnF9qppsGrg+US2upiwyR9XZhpnNWMReAUOKfyRa/aE/X4IgxhzvWK3iKi3L9eKAttX1OoIOfl17lzGA8sT5rXfr/ZMXdn8K4+8uUcg9+UxLwShUZrvEu1vvyp1RRxHTJcjCQbhafHJX9kHGXXeF4TJ7vkxMWnb+sRzN6U+atx6KzOlFC7iwSq3IDsl3BijtmdO37ho6XeIOWDVhrWCMm2mqIhEzZmg0OgWtdc1Gpa08o+uTH5FlgawlVki+HkiLFsnj+ddpEY3STnp7auMiWAPu1P4XnzWEQa7T9s27DG7L8ctyW1WJKWKBlnDrTZX2n5u5PIkp0lNk1AduSy8tgDFqvDVv/5JFyoxRrhNuP6h9F2164UdEhx21L84/L1VS9zb3ClsQt62fWznA1SaEkLFm4bNCxJ+7FM8IN1WDdvZf+8pOs668NpONzlLwygJfh+W9CwDlr8PAt5QY3DCOdzzwdi65vwOa+X+Z4XmSFQYFAjRYKDhfaNCQh4OLghNujUjzNGbB4XZGqoEdo5zil424ddQwoUmAJFQoP7E3X3EWPlN4xFvjZF2xz+liVTfiznmHitcD1/3loMTGh7ESTcFjAsETMsE3zYrxcHHTIgZ8e1Ch2p1Px58xHQcEMQTdOYhxXafrYeHgoIoYUyr6Xl6cndVTS3HNwI1M+jpvBBaTcLMXzE0VznTv7xQ7bmnx2fnBI1iJJskPCBejflaqTqdh3pWKgjVJDZPFp848+tqVvALT59XJY//L0pQhiR+3RuTJGHPpQgxDnXV1c+9d7Jmond+iNH5ChCQ3OSmb/5cHKPexjFiUa0pRPHH+nddQ3un5i99aETf/S2bOnRadHc5NETIFMlFx2k9jTr+xeYre9rUPpouTSHdFNfZg+0+BqqlUqOla+5KrmS8lx/HypgLl2eJBP13zm2Hs9VJE95Lr/zFL3CZbmA8o0doyu5/k5UwGd7TP0vjq1cfu8p/IjrXGfE76CYt8zlR+dNN3tcOR9I3bO+1xp1tKxZX9sWu2hlyx6sjdAnipH6RzNiRKhGjhDdDDGzmCl+NjNmhNXMGWK3Bxnzwp5k0JvlHmXSq/WeZdK77T3MrJfbe5pZb+t7nGmv63ueOe/7jyCTUfQfySCIZkcjGgxR7XhkgyK6TiIcHFF2FukgibbTiAdL1DmL/P6PD//v7O2JdGMPrb81b0MiGaWWu8d9a3vdv7WGdbbXst72mtatr239+ha2qW5V386WHdjCugN7IPSEYZQecYzUN5bR+sczYiSYRg0Jl8ihYRM9QnwzRMphloh5zBQ7l9ni5zNjJjjNmhFeM2eG2+yZ4s8jQjCbd+/7FlpuBRHXqikZZYf3Lw/l+V+hWxaAwDFboOB+5W2P+hQEBtwAQDDVKNyddMjOZMYblmIHABCa4n6ZoQs45+YqjwPweBZABhhDvVb6Bv7wmOVwlj9kqlGl9k1HRhBNdmPesE5fHYRFRVH0uMRPKyV9XQisxFoL2PvntIyqaOFinyJio+n1wKCd542dAWcKY/l4BcAaFVt6ZjUmXsafLwlcYxKaDcJjAoFCtmXwdk5+Qqf2L848gQeTgzO77fw4uWRZBMMhpOPa3vNZ4FhMg1M0ZNvMYwwKqbuJroThNDXmUzbQjStbigEjZ89N2UpPPq7HA6F2q4/P2rId+0O2+EVEdMtZwm7Foxn2rM608LirOuRKFWvsp0W08PpsdvaYTrtUY/8d9vs++sMWAyjKvu26zXZCcpywLc6YEuCQfQHjzJ0lHYoIBixou4cpivbNsv8YddMpBpvaYWG0lLFO6LFtppgYSJ1ScROCu6pAwQJsuhkP1gyiSza6hIwa0o5OE8ZTAmF0Nr2cAui0OmLRKiohAVjfo8ObNPDZ4KCR9IKNA7spBRg1IY+AGkfepSXvYiwUCENhaagh7sk7uyUQKuFOMOIn2h7Ay+AOKferB01SHCQCTk9mqQ+tLWUXK6AhJYEWitISaC/BEi09JqcARI8ECF62Bii5AJ5zCg7SyrSZjkLjwB8MvPGpjf0+1YBdWvIRQt34AC1V8nGdnlhGKAJXFD3CZg+iQh/UsWqpAytocU3yjbPuILXRwpV+SleMCdtmnM1l5DHFDQydMdDdkHkAbhbQeFDSvTpt81xqYWiQ8eLlwsXEJXvt/HZ+D7W3E/AAux6gAeCDysprnTY7xP4xN8M9yMtJFkDKdM1SMokHYLQ/8BYiRnaoASgHAoeKd9JLarnFJNNwOTyUrBUwXig2RyiA9oNSar1pzXYeb1zAlwtaTUuCnDBXTZ57z1/NFk+Rj3eUCQLISUP0ml3eAnjJjGDW55Ne0wIjBiTQFTcJEtQU5qBnYFiwlazABLbp1JcUWquKzFskGBfFqECO/RLQajbJym+k91J7dBw0ywy0slV7uBxLYV6xhrHdgNkgAvNpI58CQqNONQ6CU4PUp8rC7KAiNeCnVsmJZi20Vvv2NkVAKxuU7u0mS2i/PWRsJ5jSwMGQ7TEvWkboY/Hw+pXqfsuKSDZ5DlgT9vpFBx23nIm1BRmt8TjwIvAr3dP8vDIcvrjZ9x1ZuySbfll5eS3ha2RW11XIUEb8hjgnVlDCiZQ+z6KyTDfJaUVdBGg5y+d2fLeS3vbNQ4pskjMO7SybT8x86aa6s+LR/1PqRvrWA5yw57w/dQfjl/G9vr+ld95bUWe6qZ9m4aHxxC15re6T+nThBfGQZFQ9tbPlEtQmhWlKWbtwnU8NciDdQwlLvNThq4i4mNoxwQr3Q3QvvOeAcAASzOa9/J29X9XTx+3LdH2nzeVD5p6YdWCJOayUcUtkJywkU4zHlwEu16mStSZXllFfim9DZ7XhZKNob1kxBz2Ujkb8tpnHo7Nv5yC+sTPjx0+X3jliJWmXjV1DfCGTGUfVMt05czAX0/bwopYbRw6crLZkiVFRRpr2+Wgb4wZqjfNAubH7lN0+mZkplQcbngqdgAdpPzReQ0whlF5Azf74xmnPgQiMZb2UQYlsj6qvNQrsyE2JmbM1PhSvuxHglKKEjDpm2iiwSUrM3NHQNAMLwXXLbyxLDAAjp6oCY5VNUwJGes/xxFrJYQnsSLRUVSLljUPTyhpacmTqwL5MylTndyfV7YfQHP2855mrvHm9m11Wj9WJ1znyi89AIl4jn/hngdFgFcjcJHvP+P5GQIHW2e2g1sdysBwXAXt3VL+Hbf5bAC6aY1RWTXr0M1UfPoKJLkCTbps9VaZsPlvwsMpSd5+vWhspi7LS9Dg/w5dRLksOc5Cq2KX5IYwkuUL7uksByFbQur3nShw2FE951Ei6aY4uclUJkSmd03IqncXHH0iDz6Hr3vJA1L6nVctiDKQNurdFIvLOqlU3Vv1mZm9rXj4gjby/onqis86ft2xGXDUNdHbtZZoS+9K6EfZELtc6B0pOohEZu4NWHa+KEPvsED9kzaTn9c5gxY9zW17QTnGH0klnwvfUn/qAa+BsTJJ35vCgzqlxmruU9h4X/o0CBeuIWlgN62u9Fe6lKhJcXEClSy9OAF2x9B8FVhp+tLRPR/ivFX31C/7ARoW77q2/E7Z0acR1iZ1TRGJXG7dzYjSFBxVUCxnaV7RFgJqn/ZnQDlMkW8idgqPHvdlFWAUrD4s7RPrfOohUKAWVTY5+WH0iwR0R/eTIWxE1kf4OeC9nyPjFMy1EmvW5kPOkNFSzj5R7+DJ/GT1e+KydP2+KcN7wUDkyl1eLT/7yDr9sqRnDSULcSOAP18l1/lksvK58sO9nxwYbSYIpbHbV1fjMEaV3gh1MkIPGK1t8OReU04UpEua3WRtvAmQh9/YUyZX18Fk0TU+NVw+WbL5tBFQlIpTZ3JNViSj1a3aqNBddOEUwf0m4ga3SxRR79i5z8hB5njx/gA81vUM+Jt+T7w/wY/KP2SafuzAvGYSkK0OzITc9xOoKlV1YzwkRYe+3IsK8XwL/Pcnyw8kNzAszLyxFQjXon2j4zqtFJfMV5hdYgLKoZGGVRRaLQRaVRGeQNZZwWVSy1GGZwvIGWVSywmBFlZV/kkUlCkOZIVaQRSVrwqxxWGvJopJ137HeIK7JopIE0sRoVmRRSQvQGqa1KotK2jnt35GckUUlHQ10IJ2OLCrp+hPdQI8hiwcXbnoLpDh9TBY/fOY+cum3GGhgMCyLmpYMaQz9ieHvZFH9JK2QLsARjkqRjFbZYLER2AhKkWyaYbPGFs4WrhSJ6jCmsLXBq0Ul2wy2Vdn+J1lUspOxc4ZdBVlUooXRHHZbsjgBwRtKQyXUNGMEY/tzN2fZZt7OnDlz5oyZM2bOnDlz5szZ1IF5kD3I/prJmTNnzpw5c+bMmdJNj9NvgU4gJ5Dyh+0vc9erx1N3PPX1zvHlHV8e/zjM8//im+vSfB56b6DD81bf+Dzx3kDHba76eKhGw7iqma+wIKFqFlZZTFRNdAa5pGqWOix7VNWsMFh5oapRGLE+VbMmzFpJ1az7jvWBqkkgTS+rmhagdUrVtHOSY6qmo4FOWdV0/YluoYcLd3oLpDy9/DvBbpkXBm5z1Q/PkMbwuOqatAJPqJrRKhuJqtk0w+aSqlEdxh5VNdsMtl+oanYydvWpGi3MbkmMQvgxfevrw4fzsfuz3P7hCx3GhY0AAQIECBAgQIAAAQIECBBNHVR+qQIBAgQIECBAgACB+ipDVbyRpPe7n8/fah//7n2ddCqRoMx7uTROlYVjJSqXJaIs98qq28rq8bIuURKkNJdK26OFXVi6+krvic/7cBUcLDhyiqMnm062nGw92XGYuf9XUfbl/zz4I9Qv74Cp/U4F2+i+nBtfNGsrtnbZvK0ut37Je+3kdg4ObeHsal8ypS2dX0/RKGqgud6yUdVEd91zy1HWR3u9ZD3qGNGbRMxkTCoH5EwyJ2RNOkfkzULO2DArOWTHLOWULbOWY/bMYs7ZNKujgN3psh/9DOiWyKhg++k77ae5kr6vHCXsa0UZNclQUkZRcpSkUZUsJW2UJU9JHHXJVFJHYXKV5FGZbCU9Vcl/+D/CPFL8Q0Xbpp0D7jabARCB9+VPVfAkrG32GUEuA7RnGVsuB/3kciuQ64A/m7ZmuR7c3Ga1uuX7h+Yh6xUdWLbPOqnvyPJnbzmr79Cyed9pD44n2XzhvCcEk2x+QdEjkkk2f0XTM6JJNlVU3SO7L/82QWeEcaA00njQGnF8qKfzU9fBnhsp+sex8OGf+E9FwCRexormjgmczLz84yd1k1gKyIFgHkiaaD7ImnBeSJt4fsibgQ5ZqHKVf/Fveoz9T50lIqwALw9jWR2R3bFNQEPDDQI5e3//50LiRIUIqwa8EPqsJWaDMTXmDh7C/eWlZCJbY7PZ8Ubn3vezpU8/1+8YoP2bxhWJfE7TxCXh5z8XxUmGlC09M8CUeTBRUeqAjdAJAydT4qIrocdrRvgUAB9jcBRmLB7zBQjFogwKlb0OEk2sDUbGKtgQLTA94jQw6iwUrc4KxUC5MvW89HEasy9N3Pcl5g0OPT9fW7NyoxQ5jSZmUgkdlT+Qnd0GpLIyy6QAYWDQUMznFUCDH4545pTv2ZZ+Nz01Gg76wYMUElrpYeqk5ogBEir3KwIOD/GBgBwYpIXv9/PyIPGK8fHolNck531ggAtYpP4eIpBgMm5DpEyp22WwVoVHyo88kLAjW8IhruNBv8X8fv/T5gisHnDoU2iqx7UYpAQjDIxt9YztCaCimrTq/vG9iSGwEA8AWW1mFwAEYrRV9g9/ATxAhAWAVo1AT6x1MPUNaA8nRZQMozoORmalDYuHey8D4UE+AEIRo0RI78OlHLrTUrMgtK8F/qExXMs1p01uiBoGgUn8rF6eBdjVM9sTh+n+XfBr+RcKFEIuFTeCTZeHDggnCJlkJa5DZeDia7Vg1X5FlJ4raGfTZ5TtdJ434s7X328VSsOXKFBqlMES1IWAkMpCsGxaWun0fsb6KjgH27BiLLAbAlvkywaaoc+Qho275DVPaGouW+9NxSbbaa2NViSlS/KGpBHn/7RFGCSIBSZCpjmpWTrvGIu/LjQEImkMBnFeaBASDcptJe3lJcyy4nI8gLoWte4L29T3ddl1wgC1NSBMLKsmgQxbztYZF/lWYxURu/BcRrPzTxtO62+0BDBjnlCr7Z+uTU2LQm4xM3YQhoDN1m46FinSo2SWX41jGrfJQqpbEaAC3YkmR2bPA0epUixDzFAMix3vLnnQjnqXN+ELJOy4XEHotXsar1S1lpws0DSkAYkklrwFZjvebGqFVl5ArxirLLzER971zje7Ff7gQgkbSQj8bUrSHRzRtBE0hxYNFMplRkOldXbr1LZLi7nERzFHHRD5GZxdPHXmXT+L0SgX5MLhGbwcs9S1pqfwfAYeazn5ZwKNHl8YMjzMNxjCOAYFTa7PBhHCwL6zHYh7zgrRwwIv8fIouhamtDSvov02dWY8O7Bw2XaIHkRBRGIWSdvH/fNYuhZM6jVE0CAd6JUEX/wZpvIXgT3oEaiJAnnfGLAtct/TVWvF9kUwas96dS4bjNaz5EZaUy2KHNU9TN6YkROqf+TAu3IQEmEc2S4GPqN8SFqjlPYeoOcMOq1e/yyt1OSqNZTCpLQvnmclPZunNET4slkAAdBlGbRA29N7+oyNhqTAYM6WQ5DXyYNQrMa7WbNsgCKt5TKZBu8j02lo8VmbhMRXg3k3g20a7HwW/YOfC7shSrRGxiwRV/AbSzvjpBFHlnNIQivEBegmg0xhdiROHMKFKlmXJTley5ph8bTcLgrc9zLu7dqPraZ/EkSze8JCkklmdV4AmUWW1Z/gl7/vAtImV8vrfpaC5VVfHEbRc9b/3FgzaVIGo1si2aYcgrzAQqhkPSV2y2P8y1vSxUJNgAxED8hBZExp/xDMKSA5y9odiZKDiCDIMe/2yIeaVstGXBWeFit71ec0JlkJk0G+zRNNnaYRiahnEhC/s3a6hfXuOx6IjvU1thf8gZ6h7BEdueNxcNE2iAur3y+kXHDDkMBpQORCqtfuAOIK4PIBZqnX1Fyooaw4b3STJuSNnqeNmGveQMomWL7uJtr+0JigQMkpmprlMqwYqlpqscvobqV32cYfcm8wwF6CGxZRmG7rucGeSPZdBn9oqvwtjuev2yhgCK9MQAhjFs6J5al3ANsMEW4etiFAUAIsJHkt/juBdJXqaqsPtjgMIEk10THS+pVgstQvP/sZJ+U6zYNyYB/eQVACAeEgsAJka24AD/izM3XNpnIHUWa1wIqqMxLecBBHD80SS2DxRn4MKqbnfZB4rcwiE7XrA74X2XAllwFfNOkaQ++TZk/ubx0h1RwzNw4KFeIyzu1wXJy5gBuoamCW5vrwFAvG4S4Xe0H3dWKNIu5idAmzzlNNi5PxyxMQJaj4Z3bL+VoJArqVRAW6qSCfWhnhjGXhIAbsapqrffZmxZHAmKAc9mFXGZccAHjbkPvjA3/I1AZNoEDAqW5FVPMr7p617uJeVZN8sPpApGjuMl7Q8pkspzdETlrn4Uo5gotGknhIQoDkwUYO2hGwYkLsnzyBebkK0y3HF9PjdOh1feVXB+34DkwIMQlvUGAcZtyvwdBcgA6sGHFqfhhnBObasz+uvBfWzG+3sRgoMbALU437TGmxPXhYPMzoeO1kehwtZ0DNueIdpun/Bthp85eZKd5QjnVI5pEjZqEYT4ld59GRJpjKL0fjuhPzDeElR91F9bjzXJZA9tbNZdEQZA7DrpR0nlzc4V77UgElYixOzXt6gC/H03KgIvraY0ThGMxKhEKDTkuLqWhSxI5pw92cIhCdP/j+NzyUzUDfqeEsPgRnIiyTHTz8aAIEUGVdbCMxySZq1dqIwU4GFoJC98+o08LRu9TlJ/s/VpsWLS0ek0n3Jh8dnQhnhpH5IJKY3GSPd1SnYWtP5Qoc2R4IWJSGQXn98B0cTHOfBiNjUhy3Z/bnJpjXoeZ5vxPmopdWaYJorkazLlRqWc+0YG1IGRqGZDdc6rbeSJRlEF51QdFojYXiJ9+h1qfyAe39lp1Aj8vBXXP0Yv3/ev6FtKgw6U0YHHaDgBGeqUzh8TfQxKK3hufS/9MCUd7o6fSNIvhmw9Fn1jP1+CjizdvsLdCZjNVGwZUMhXmYELv9Co4qvbrkPKf8t6HcZa3ybhUqNNZsng/xqyqp3kchMcTg/4MALaH+2QhPW3M2zw/9Gf5wIjyycVGXGmx6sXE9kjjefGBylYKvzvvnWHrLfbBPHwZL4h/Q6UN1GrDbhytXfdg+fBJ/9Tf7mxvra6sry0uLC/NzQ24/4yvDyZnsWsG7Y3MJnwgOLAEGJ+eMeIIVzHCN81hynHERInJvG4rShYOuiswezZBm0C2slEjJFPPXsP7gWyMC71JzWf51UyjljZYXs5GZI8aUSFAtWRDY19sD+Q5mvhXaASwokTeqCSK0oC+uUY7zIgJwAHfDGWPwG1m5jac0pNCyfGlgQ3dMGZ8ToYYFQeHo2MjIi+Ek/Hmifb/dn3eopVVB4ZqsUCTEoCvpZTsHVn9LPIbQ04XVp4nUhYOZqfmUncRVxlB+Jl+9OKMHqtMJKoAoCderUWd2GOGL+Nztz0nonvqgSviSBQhBI4KcsDTlbCxcbGb4NE+OPdBp5tMzhM451htj1vlJJn2fzpBwoimi6tW/bSn4qGK6sUD1tVBk1jwwF14CwUnKaczw88w0OY0CDyEWEg+hPYw5QL+eT9TR/zwXho8qTXVje1biDb1RNlICfI/J8QcS0jYHo6eSn5tbaF6GqufGpdcyOEKETkODPWI5Nk6vbCakx0g9XtRCvEePF/H4DOWXlX2ji1+eeCvP+H+i57TRa6kjY2nt92Zn5WO1UtLRAG3QhkYMMXwqywUia6DXVopWe0Z+qatTLgLuzEs3el8L/R3pnE5OKZmCJxrdafmmnlnCZ0xY2BUTHZ6zZsyBgSmOeQghoKauQO9kHCHeqSKvjPzy2C2XidxI98fh3CWMAWShkSOaAYm40GpGkJZ10fak2SqsdeQaWTX2TbYaY6FwKTMOXTUA9b38Bsfg3dSQdGhRHoEuTbS9XI60tDFVay/gcuYgfQM/IDfciqne3OSAi62XsHEATzcOqzaP1FyBZjY9wTd6AzcSSkqfJyPEg2URS/64+SAf855VunIjusABUiMz8kHS80pv0EAjEVQEQLLLiFlJLkSnhva3I574TKdGK2lnenAiwIcYnC8TF6ClH0pIJcdCwp1CeWIZIF2SPnEJpUGAlntke4giWJB40oj7C6pcKr2ZR5keabJOo0I8AlUKTieon9NKQ9XaK4ekjy7i3CTeE5RbN4VQHXV1nIvgJwW7kdLcIwmDRL4FwpisMlyblgCX9KtS3Ar6C66clWtZ8A6HHZVfcq3eNFDkoSntASc/nwasZXqdRhHlzbqzfUrUMBM4auRu+cS9porm1QV3QJIWp/n2rHSHzuRwzXagsL7I+hDHSBVXQIr3MNJ2iqLyvnazMXxHsP910oZWdaIy1+ISoEV2S3SaHxZBV+JqWhFSmbxoahW5WaaoTNEcsMpSd1MVeEioo/8t3TWF4d8B/QshkGIDjGBvIEzIhr+d8Qdd6rXwoXtCGQhLGgtiqEpq39hyVfiE7A5uyAmJ7iSiZMtc4QpM0q9KEW88Z02WUE0xQZekkzr6gaJ6oJaMm7r1nSjM1UZJCFeRbet4XqI8PN/NgTtzlmb43gI2FAa8nMODLNyftl/rZN4RuI2HsEouNW+S0dUAz9cmeAsf1X6MqGEKzap12rVpbd/r4n7YRi41FCT2dwZ8wAw4xoC9bMNptfUKCtpmIrzEJANpymn0YhrTaOuqLbLbVsqn61DTtH/mSe+wk9W+pUnnPkgXmea+GaqHx0ZOLQ8WyqmWcQhs1mXr6VPkm7bS6XRdUafTw8Fg6QN2Mvu3NHM2ZrHU7GVa9H3UsvtpfZRqLTdi9GSfjk7Lzmrbd8kohdpVUfbNEQr1CjYSNWiezJYpJ0K+eb4JeK1nEjqZ5lrapDVJadmKebr29cKENvvvTZQybVQxV5AvKX2aAuRTw0Hbg+toad2wQKlaniP94r7HOmSzUhW2A3wgGHCMAU5PoW54oXVvzxnljt46hKJyVaA9AYlwS+4rSzbKQkQKTXZuzGh/WVjRlFRT3vCcDDjx/UyBmxhwtAMb5aByyV7s1kh5dvkMMAVfrihln8s3xqvmA2nYQQ0zM0czN2V9nJaR4K3ME9K2cQMmzIsNtBgLK2TuLjZPHPkllQHo4ZcxmMZ5bGh1tZmjVp1+un1MmViN2XAhM42bS97QqFZRNUmAO3zspBRzwNEHyIkXLNduiiUJnCtz8sLl6sFnHjof3EegfIcQWqats7P84PleAHgOdBJZqZVm+jjWQ8LUnoT2GTWJayNnRr9GAusNmOA1UN7tGGOgC2JjBh+0EfO+M2ZzsuvR8bLpet0RMzalN9cjZWUykD06Xr5cr2tx8wJ7Vc51K4GDolvBHr4xy65hdNfjfYH3U4B9QKK93m2tTyEBx/fL23NV64CYR+diCv4ViXQZ6c7fMIb8bXakMJf+xblnZ/NZh//xUipNSMEG+5unuucUHuCqa//uiScG5HlH/tMtvWUe/n1SIW7HKyL1tYxPEFRtGO4V9kAfidFJtSe84y6xu/gfiEGZ/y/HSHLrORIoSOKUB+VgRPTFfEEWicGelfn+jEKSzpbLpSH7ehfWGb5AEfu5h5KqSfnTIul0qcLPiRw8Eje/i6ASSgQ/+HHwVhVjvzUCuWl8YqNTu33A5DOVCEwtmWNS/vW1uSJ7UJnVR0XrGwX7YuCAGXRwZl6k7P72j4ofL5xvnZ3oEN2SVwnJY6osk9OaLiwm+doOB2vzr+rxMVe17OXhDPMW1WguRd7oxymny0ZvQB0ZrervmvuSQjbaMN+xTYIhEdIj01lDC3/0KxY9+Z/qF25nH5weUVQGiAj9FAwSk6uxArHjvCvw6u+5ejeC7rk1La3dtD7ouwglGRqLD8E4iiFjStqzRJ72zUrEbcZjn88Z/8ysGo2JT9DdRYpubFFTXJNCyqBsCRSBGbIdRtH3z34xmJZTbNKxGD/8okjcv7svqEP2omTSNDmOHAPUXaJsJp1KJuKxaCQcqqmuKqosqqwoLystKU4WJg9nZMyEWUugFPcNQUPp8rfK3zFKNhWKRkJHMSU0Ih9YIksToG9iRgPoGQ3aAKdtAU27FDHqE5+gv49U/cSi36u5lKpsCoxvTFpFcPlJHa0cOqontGyoWT4T0JpZ/+EXR9Lh3UNBU0yfNU1JAmfHN92yDKapkSoui/S12Xte2UXn482MKSsZyZBI+eAOVv9O6u1/ChYABjwHbHqohdEAXY4SgDERacV3YFojh91NCVm32Fhtmoa+0f+MLACcTrJ9vv+ZDQBovqKfN/uPbgAAKfu7Mf5F8K8eCjVZInSampRMZXS1/h5f7ngI5YfMr/Jk4BjfVbqNjdkdJka4Tr3KMZTtm08nqbF4MabSs1PjgxWZp8n50OuznnAaNiz0Mxdl0jUeVdOHFn31l6ZZv6spksA5VhK0MjFUkVjNbj3ylCfCoSDtyLacwOwiETRxG/F/Hkhehu0Hjej3tvllGcvmZqJhb/bgYlYQc5KI7Ihk1XA3pSKZTsVoJ/b1CsyuEkkr+iAb/1DI/08Mp1HMP5qZ96oYWa/gs7WVbNrLPXm4DcSdrM7sxMZr4W6VylTB2ly9MwenAbObRNGGvshei9T9XrfTbjUb9RqpVsp+08LxX6ix9Soh29spKvBe963nkXBSWih2Zhf1cLdJVbqivLjehVPQgdldomlH38leiw5PT46PDg/293Z3trc2N6ZDK8/+p5FYTxiz4qSqYlJ7C0gHSDqprdyFQzbC3S7VvQ3hQL0rl2QAs5EYOtCvYa9Hbi8vK80/Ptzf3d5cX11eTJM2ntNJC9WbTVjq7Fhksvug4zGknLRGd+VUzeLukJpMRzpe78atmIbZI2LptH4Pez36eHtba0tzU2NDfV1tTXXV9Gnnn24BySCm6WpJEDOK4AjWKCLSpeciTXr8f0iZtTM/xyxdvbjOCTzD4cLS/iCTLSOfzy3Z8dPPJF1TdsGJ+XQ146ZYoJf1BDzB6jBAfplOfNbCJ3+8LN/e+IxTCUEspKsPSljHPyfhCxYkS2FZTXF2PKTQ9hnMYIqK7srcQMtJYjFdnSGWWv5X9E8gEKxuOYrLZhF9zu2LFI8X/djOhSFXUcQSIhsAq/oZygHoBgs4n5JSz9qsY5mWnZ7JlTKBGl1HqcFX0sQyInOgw2w8qzJOYAOr8wLKyvAD83l3rtLqeLuJ38aMM6EhViGy+fCqX+BcgDqw4EupUsZjMzfrWqd1PGdxJ+YGTXQ/zI04gSVWI7I0BLztcGLBDWJg9UlQrUx2At0rzs0i1ngT7HlBGHuzHrEGkU0RK+7pZjwgB5bRStQoV+Uyl6yHQ5zjS2wSSwxdXfeu5MVmfGItIqtsVbCBb17xghpYPRPUKpOzGvcr3ssj3njbrv9U8WeLAmIdIhu5t+rXNR+gAVimE1CnLCkunETWJyDB8SW+Eas7LR31k+bZFoTEekQ2uRGi55Et0/1gBFb/BPXKFCwl9Krzi0g0fgoZ/Yfu4xZHxAZEnkz8VX/YDAAagmVhMzQoa6orp5cNSEhyfJkdxGZMaxv8b3q7hTGxEZGvJSO6J68tD1MQCaxBEjQqU3WI6queimDZ+Hmr0alDv6+QI8Y0kacwXnmmnaQh5iR2tmBkumyJRz+zdAwrji/zW/B1i7Q+KUAAyJPNv4/GV8pA1a8iIPYAAP/cDdPte3r6f23Ic7fkfyBOWNsGECD/9zuzX1ThuYISSlzpKK6GKIBfzSlJpw1WsZiBvtCvUIqhhgKJtFgCW2dAtMVVqvIgEAuTcKpIp7EwbJaxUUFjNYgWlsDdRiqCrf1CkzzHdkCfxLAv4X5zF24DiPloDiCWcpgAh4YsADYAqk0IY8MmzOnQJsIQ7txE0vy6yUZwEspt22lHVkLahjOb2PM5sZS+8xP6jujbyR0XME7epJcJyW27+Gl3XBowGjp2yGTLSB8whpJBa4wjbgxjsm9rWaIhEePghEgcxEX7V+nMtk1iVkZmYl5iC474oAILnQwsrEU0EPPJd5gmqzbF9Lld6CIxO6ORVS2G2KirOVfepw4X2XrnH/xP+Ezc96TvivD+/Mw4eb56FuB+zO4beXwarebBnf+n/nspicf3z5AzKZY0pVZup70u9+NNPmmdVeElal71iTqZUz8ehTuvn03fOls2LOuVtYCAOfWD6xSWh0gjBp803lKHz8RRcZ/vg38Npb8VpX7+jv3W3Timpsm+P05wyo7z3pqtB/11loEN6bsXhzrg1XOH1l7j49ZcpXyrmlRdolKq1HS08B4j1WvM5n80aPq3ZShougAA) format("woff2");
+}
+</style>
+
+</head><body>
+
+
+<script>/*
+ * xd.js - parser for the .xd futureproof crossword format 3.0
+ * spec: https://github.com/century-arcade/xd/blob/master/doc/xd-format.md
+ *
+ * XD.parse(text) -> puzzle. Throws Error (name XDError) on fatal problems,
+ * collects non-fatal ones in puzzle.warnings.
+ *
+ * puzzle = {
+ *   meta:       { lowercased-key: value, ... }
+ *   rebus:      { gridChar: EXPANSION }
+ *   special:    'shaded' | 'circle' | null
+ *   cluegroups: { letter: heading }        beyond built-in A/D
+ *   width, height,
+ *   cells:      [ [ cell | null ] ]        null = '_' (non-existing cell)
+ *     cell = { block, solution, special, rebusKey }
+ *              solution is null for '.' (empty/unknown), else a string
+ *              (multi-char when rebus)
+ *   numbers:    [ [ n | 0 ] ]              derived grid numbering
+ *   entries:    [ { dir:'A'|'D', num, cells:[{r,c}], answer, clues:[clue] } ]
+ *              answer is null if any cell solution is unknown
+ *   byKey:      { 'A1': entry, ... }
+ *   clues:      [ { group, num, text, answer, meta:{} } ]  group '' = uniclue
+ *   notes:      string
+ *   warnings:   [ string ]
+ * }
+ *
+ * XD.clueHTML(text) -> HTML string: escapes, then renders the clue markup
+ * {/italic/} {*bold*} {_underscore_} {-strike-} and '\' line separators.
+ *
+ * Works in the browser (global XD) and in node (module.exports).
+ */
+(function () {
+  'use strict';
+
+  function xdError(message) {
+    const e = new Error(message);
+    e.name = 'XDError';
+    return e;
+  }
+
+  // ---- section splitting --------------------------------------------------
+
+  const SECTION_NAMES = ['metadata', 'grid', 'clues', 'notes'];
+
+  function splitSections(text) {
+    const src = text.replace(/\r\n?/g, '\n');
+    const out = { metadata: '', grid: '', clues: '', notes: '' };
+
+    if (/^##[ \t]/m.test(src)) {
+      // explicit "## Section" headers; unrecognized sections are ignored,
+      // except Notes which the spec defines as the free-format final section
+      let current = null; // null before first header; 'ignore' inside unrecognized sections
+      const buf = { metadata: [], grid: [], clues: [], notes: [] };
+      for (const line of src.split('\n')) {
+        const m = line.match(/^##[ \t]+(.+?)\s*$/);
+        if (m) {
+          const name = m[1].toLowerCase();
+          current = SECTION_NAMES.indexOf(name) >= 0 ? name : 'ignore';
+          continue;
+        }
+        if (current === 'ignore') continue;
+        if (current === null) {
+          // lines before any header belong to metadata (lenient)
+          if (line.trim()) buf.metadata.push(line);
+          continue;
+        }
+        buf[current].push(line);
+      }
+      for (const k of SECTION_NAMES) out[k] = buf[k].join('\n').trim();
+      return out;
+    }
+
+    // implicit order: sections delineated by two or more blank lines
+    // (3+ consecutive newlines); blank lines may contain spaces/tabs
+    const chunks = src.split(/\n[ \t]*\n(?:[ \t]*\n)+/)
+      .map(function (c) { return c.trim(); })
+      .filter(function (c) { return c.length > 0; });
+    if (chunks.length < 2) {
+      throw xdError('not an xd file: need at least Metadata and Grid sections separated by two blank lines');
+    }
+    out.metadata = chunks[0];
+    out.grid = chunks[1];
+    // section 3 is clues, section 4 is notes; tolerate clue groups that were
+    // (incorrectly) separated by two blank lines instead of one
+    const rest = chunks.slice(2);
+    let i = 0;
+    const clueChunks = [];
+    for (; i < rest.length; i++) {
+      const first = rest[i].split('\n')[0].trim();
+      if (i === 0 || /^[A-Z]?\d+\.[ \t]/.test(first)) clueChunks.push(rest[i]);
+      else break;
+    }
+    out.clues = clueChunks.join('\n\n');
+    out.notes = rest.slice(i).join('\n\n').trim();
+    return out;
+  }
+
+  // ---- metadata -----------------------------------------------------------
+
+  function parseMetadata(text, warnings) {
+    const meta = {};
+    for (const raw of text.split('\n')) {
+      const line = raw.trim();
+      if (!line) continue;
+      const m = line.match(/^([^:]+?)\s*:\s*(.*)$/);
+      if (!m) { warnings.push('metadata: unparseable line: ' + line); continue; }
+      const key = m[1].toLowerCase();
+      if (Object.prototype.hasOwnProperty.call(meta, key)) {
+        warnings.push('metadata: duplicate key not allowed: ' + m[1]);
+      }
+      meta[key] = m[2].trim();
+    }
+    return meta;
+  }
+
+  function parseMapping(value, what, upcase, warnings) {
+    // "Rebus: 1=ONE 2=TWO"  /  "Cluegroup: B=Boxes"
+    const map = {};
+    for (const pair of value.split(/\s+/)) {
+      if (!pair) continue;
+      const m = pair.match(/^(.)=(.+)$/);
+      if (!m) { warnings.push(what + ': unparseable mapping: ' + pair); continue; }
+      map[m[1]] = upcase ? m[2].toUpperCase() : m[2];
+    }
+    return map;
+  }
+
+  // ---- grid ---------------------------------------------------------------
+
+  function parseGrid(text, rebus, special, warnings) {
+    const lines = text.split('\n')
+      .map(function (l) { return l.trim(); })
+      .filter(function (l) { return l.length > 0; });
+    if (lines.length === 0) throw xdError('Grid section is empty');
+
+    const rows = lines.map(function (l) { return Array.from(l); }); // unicode-safe
+    const width = rows[0].length;
+    const cells = [];
+    for (let r = 0; r < rows.length; r++) {
+      if (rows[r].length !== width) {
+        throw xdError('grid row ' + (r + 1) + ' has ' + rows[r].length + ' cells, expected ' + width);
+      }
+      const row = [];
+      for (let c = 0; c < width; c++) {
+        const ch = rows[r][c];
+        const at = ' at row ' + (r + 1) + ', col ' + (c + 1);
+        if (ch === '_') { row.push(null); continue; }
+        if (ch === '#') { row.push({ block: true }); continue; }
+        const cell = { block: false, solution: null, special: false, rebusKey: null };
+        if (ch === '.') {
+          // empty cell (partial solution): playable but unknown
+        } else if (/^[a-z]$/.test(ch)) {
+          // lowercase = Special cell; if also in the Rebus header, the rebus
+          // value wins (spec: cells both Special and Rebus use lowercase)
+          if (!special) warnings.push('grid: lowercase "' + ch + '"' + at + ' without a Special header');
+          cell.special = true;
+          if (Object.prototype.hasOwnProperty.call(rebus, ch)) {
+            cell.solution = rebus[ch];
+            cell.rebusKey = ch;
+          } else {
+            cell.solution = ch.toUpperCase();
+          }
+        } else if (/^[A-Z]$/.test(ch)) {
+          cell.solution = ch;
+        } else if (Object.prototype.hasOwnProperty.call(rebus, ch)) {
+          cell.solution = rebus[ch];
+          cell.rebusKey = ch;
+        } else {
+          throw xdError('grid: unknown cell character "' + ch + '"' + at + ' (no Rebus mapping)');
+        }
+        row.push(cell);
+      }
+      cells.push(row);
+    }
+    return cells;
+  }
+
+  // ---- numbering + entries (derived from the grid, standard rules) --------
+
+  function isOpen(cells, r, c) {
+    return r >= 0 && r < cells.length && c >= 0 && c < cells[0].length &&
+      cells[r][c] !== null && !cells[r][c].block;
+  }
+
+  function deriveEntries(cells) {
+    const numbers = cells.map(function (row) { return row.map(function () { return 0; }); });
+    const entries = [];
+    let n = 0;
+    for (let r = 0; r < cells.length; r++) {
+      for (let c = 0; c < cells[0].length; c++) {
+        if (!isOpen(cells, r, c)) continue;
+        const startsA = !isOpen(cells, r, c - 1) && isOpen(cells, r, c + 1);
+        const startsD = !isOpen(cells, r - 1, c) && isOpen(cells, r + 1, c);
+        if (!startsA && !startsD) continue;
+        n++;
+        numbers[r][c] = n;
+        if (startsA) {
+          const span = [];
+          for (let cc = c; isOpen(cells, r, cc); cc++) span.push({ r: r, c: cc });
+          entries.push({ dir: 'A', num: n, cells: span, clues: [] });
+        }
+        if (startsD) {
+          const span = [];
+          for (let rr = r; isOpen(cells, rr, c); rr++) span.push({ r: rr, c: c });
+          entries.push({ dir: 'D', num: n, cells: span, clues: [] });
+        }
+      }
+    }
+    for (const e of entries) {
+      const parts = e.cells.map(function (p) { return cells[p.r][p.c].solution; });
+      e.answer = parts.indexOf(null) >= 0 ? null : parts.join('');
+    }
+    return { entries: entries, numbers: numbers };
+  }
+
+  // ---- clues --------------------------------------------------------------
+
+  function parseClues(text, warnings) {
+    const clues = [];
+    let last = null;
+    for (const raw of text.split('\n')) {
+      const line = raw.trim();
+      if (!line) { continue; } // single newline separates clue groups
+      // clue metadata attachment: "A1 ^Refs: A2 D4"
+      let m = line.match(/^([A-Z]?)(\d+)\s+\^([^:]+?)\s*:\s*(.*)$/);
+      if (m) {
+        const key = m[1] + m[2];
+        const target = (last && last.group + last.num === key)
+          ? last
+          : clues.find(function (cl) { return cl.group + cl.num === key; });
+        if (target) target.meta[m[3].toLowerCase()] = m[4].trim();
+        else warnings.push('clue metadata for unknown clue: ' + line);
+        continue;
+      }
+      // "A1. Clue text ~ ANSWER"; group letter omitted for uniclues
+      m = line.match(/^([A-Z]?)(\d+)\.[ \t]+(.*)$/);
+      if (!m) {
+        warnings.push('clues: unparseable line: ' + line);
+        continue;
+      }
+      const body = m[3];
+      const sep = body.lastIndexOf(' ~ ');
+      last = {
+        group: m[1], // '' = uniclue
+        num: parseInt(m[2], 10),
+        text: (sep >= 0 ? body.slice(0, sep) : body).trim(),
+        answer: sep >= 0 ? body.slice(sep + 3).trim() : null,
+        meta: {},
+      };
+      clues.push(last);
+    }
+    return clues;
+  }
+
+  // ---- clue markup rendering ----------------------------------------------
+
+  function escapeHTML(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function clueHTML(text) {
+    let s = escapeHTML(text);
+    s = s.replace(/\{\/(.*?)\/\}/g, '<i>$1</i>');
+    s = s.replace(/\{\*(.*?)\*\}/g, '<b>$1</b>');
+    s = s.replace(/\{_(.*?)_\}/g, '<u>$1</u>');
+    s = s.replace(/\{-(.*?)-\}/g, '<s>$1</s>');
+    s = s.replace(/\s*\\\s*/g, '<br>'); // multi-line clue separator
+    return s;
+  }
+
+  // ---- top level ----------------------------------------------------------
+
+  function parse(text) {
+    const warnings = [];
+    const sections = splitSections(text);
+    if (!sections.grid) throw xdError('no Grid section found');
+
+    const meta = parseMetadata(sections.metadata, warnings);
+    const rebus = meta.rebus ? parseMapping(meta.rebus, 'rebus', true, warnings) : {};
+    const cluegroups = meta.cluegroup ? parseMapping(meta.cluegroup, 'cluegroup', false, warnings) : {};
+    let special = meta.special ? meta.special.toLowerCase() : null;
+    if (special && special !== 'shaded' && special !== 'circle') {
+      warnings.push('unknown Special value: ' + meta.special);
+      special = 'shaded';
+    }
+
+    const cells = parseGrid(sections.grid, rebus, special, warnings);
+    const derived = deriveEntries(cells);
+    const clues = parseClues(sections.clues || '', warnings);
+
+    const byKey = {};
+    for (const e of derived.entries) byKey[e.dir + e.num] = e;
+
+    for (const clue of clues) {
+      // uniclues (group '') attach to every entry with that number;
+      // A/D attach to their entry; other letters are custom cluegroups
+      let targets;
+      if (clue.group === '') {
+        targets = derived.entries.filter(function (e) { return e.num === clue.num; });
+      } else if (clue.group === 'A' || clue.group === 'D') {
+        targets = byKey[clue.group + clue.num] ? [byKey[clue.group + clue.num]] : [];
+      } else {
+        if (!cluegroups[clue.group]) {
+          warnings.push('clue group "' + clue.group + '" has no Cluegroup heading');
+        }
+        continue; // custom groups don't map onto grid entries
+      }
+      if (targets.length === 0) {
+        warnings.push('clue ' + clue.group + clue.num + ' does not match any entry in the grid');
+        continue;
+      }
+      for (const entry of targets) {
+        if (entry.clues.length > 0 && clue.group !== '') {
+          warnings.push('duplicate clue for ' + clue.group + clue.num);
+        }
+        entry.clues.push(clue);
+        if (clue.answer !== null && entry.answer !== null &&
+            clue.answer.replace(/\s+/g, '').toUpperCase() !== entry.answer) {
+          warnings.push('clue ' + (clue.group || entry.dir) + clue.num +
+            ' answer "' + clue.answer + '" does not match grid "' + entry.answer + '"');
+        }
+      }
+    }
+    for (const e of derived.entries) {
+      if (e.clues.length === 0) {
+        warnings.push('no clue given for ' + e.dir + e.num + (e.answer ? ' (' + e.answer + ')' : ''));
+      }
+    }
+
+    return {
+      meta: meta,
+      rebus: rebus,
+      special: special,
+      cluegroups: cluegroups,
+      width: cells[0].length,
+      height: cells.length,
+      cells: cells,
+      numbers: derived.numbers,
+      entries: derived.entries,
+      byKey: byKey,
+      clues: clues,
+      notes: sections.notes,
+      warnings: warnings,
+    };
+  }
+
+  const XD = { parse: parse, clueHTML: clueHTML };
+  if (typeof module !== 'undefined' && module.exports) module.exports = XD;
+  else this.XD = XD;
+}).call(this);
+</script>
+
+<script>/*
+ * app.js - NYT-style crossword game over the .xd puzzle model (see xd.js)
+ *
+ * Two layers:
+ *  - P: immutable puzzle model produced by XD.parse (never mutated)
+ *  - S: mutable game state (fill, flags, cursor, timer), persisted to
+ *       localStorage keyed by a hash of the .xd source text
+ */
+(function () {
+  'use strict';
+
+  let P = null;        // puzzle model
+  let S = null;        // game state
+  let xdSource = '';   // raw .xd text of the active puzzle
+  let saveKey = '';
+  let clueEls = {};    // "A1" -> li element
+  let cellEls = [];    // [r][c] -> div element (null for none)
+  let orderedEntries = []; // A entries then D entries, by number
+  let timerInterval = null;
+  let toastTimeout = null;
+  const sessionPuzzles = []; // { name, text }
+
+  const $ = function (id) { return document.getElementById(id); };
+
+  // ---- theme --------------------------------------------------------------
+  // 'auto' follows prefers-color-scheme; 'light'/'dark' force via the
+  // data-theme attribute that base.css (and theme layers) key on.
+  // Applied immediately (scripts are inlined before the markup) so the
+  // page never flashes the wrong theme.
+
+  const THEME_KEY = 'histos-xw:theme';
+  const THEMES = ['auto', 'light', 'dark'];
+
+  function applyTheme(mode) {
+    if (mode === 'auto') delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = mode;
+  }
+
+  let themeMode = localStorage.getItem(THEME_KEY);
+  if (THEMES.indexOf(themeMode) === -1) themeMode = 'auto';
+  applyTheme(themeMode);
+
+  // ---- persistence --------------------------------------------------------
+
+  function hashText(text) {
+    // FNV-1a, enough to key localStorage entries
+    let h = 0x811c9dc5;
+    for (let i = 0; i < text.length; i++) {
+      h ^= text.charCodeAt(i);
+      h = Math.imul(h, 0x01000193);
+    }
+    return (h >>> 0).toString(36);
+  }
+
+  function saveState() {
+    if (!S) return;
+    try {
+      localStorage.setItem(saveKey, JSON.stringify({
+        fill: S.fill,
+        pencil: S.pencil,
+        revealed: S.revealed,
+        elapsed: S.elapsed,
+        solved: S.solved,
+        autocheck: S.autocheck,
+      }));
+    } catch (e) { /* storage full or unavailable: play on without saving */ }
+  }
+
+  function freshState() {
+    const grid2d = function (v) {
+      return P.cells.map(function (row) { return row.map(function () { return v; }); });
+    };
+    return {
+      fill: grid2d(''),
+      pencil: grid2d(false),
+      wrong: grid2d(false),
+      revealed: grid2d(false),
+      cursor: null,       // {r,c}
+      dir: 'A',
+      elapsed: 0,
+      running: false,
+      solved: false,
+      autocheck: false,
+      pencilMode: false,
+      rebusMode: false,
+      rebusBuf: '',
+    };
+  }
+
+  function restoreState() {
+    const s = freshState();
+    try {
+      const raw = localStorage.getItem(saveKey);
+      if (raw) {
+        const saved = JSON.parse(raw);
+        const sameShape = Array.isArray(saved.fill) &&
+          saved.fill.length === P.height && saved.fill[0].length === P.width;
+        if (sameShape) {
+          s.fill = saved.fill;
+          s.pencil = saved.pencil;
+          s.revealed = saved.revealed;
+          s.elapsed = saved.elapsed || 0;
+          s.solved = !!saved.solved;
+          s.autocheck = !!saved.autocheck;
+        }
+      }
+    } catch (e) { /* corrupted save: start fresh */ }
+    return s;
+  }
+
+  // ---- model helpers --------------------------------------------------------
+
+  function cellAt(r, c) {
+    if (r < 0 || r >= P.height || c < 0 || c >= P.width) return null;
+    return P.cells[r][c];
+  }
+  function isOpen(r, c) {
+    const cell = cellAt(r, c);
+    return cell !== null && !cell.block;
+  }
+  function isLocked(r, c) {
+    return S.revealed[r][c] || S.solved;
+  }
+
+  function entryAt(r, c, dir) {
+    for (const e of P.entries) {
+      if (e.dir !== dir) continue;
+      for (const p of e.cells) if (p.r === r && p.c === c) return e;
+    }
+    return null;
+  }
+
+  function currentEntry() {
+    if (!S.cursor) return null;
+    return entryAt(S.cursor.r, S.cursor.c, S.dir) ||
+           entryAt(S.cursor.r, S.cursor.c, S.dir === 'A' ? 'D' : 'A');
+  }
+
+  function entryFilled(e) {
+    return e.cells.every(function (p) { return S.fill[p.r][p.c] !== ''; });
+  }
+
+  function firstEmptyCell(e) {
+    for (const p of e.cells) if (S.fill[p.r][p.c] === '') return p;
+    return e.cells[0];
+  }
+
+  function nextEntry(from, delta) {
+    const i = orderedEntries.indexOf(from);
+    const n = orderedEntries.length;
+    return orderedEntries[((i + delta) % n + n) % n];
+  }
+
+  function nextIncompleteEntry(from) {
+    let e = from;
+    for (let i = 0; i < orderedEntries.length; i++) {
+      e = nextEntry(e, 1);
+      if (!entryFilled(e)) return e;
+    }
+    return nextEntry(from, 1);
+  }
+
+  // ---- rendering ------------------------------------------------------------
+
+  function buildGrid() {
+    const grid = $('grid');
+    grid.innerHTML = '';
+    grid.style.gridTemplateColumns = 'repeat(' + P.width + ', 1fr)';
+    grid.style.fontSize = 'calc(min(560px, 92vw) / ' + P.width + ' * 0.55)';
+    cellEls = [];
+    for (let r = 0; r < P.height; r++) {
+      const rowEls = [];
+      for (let c = 0; c < P.width; c++) {
+        const cell = P.cells[r][c];
+        const div = document.createElement('div');
+        div.className = 'cell';
+        if (cell === null) {
+          div.classList.add('missing');
+        } else if (cell.block) {
+          div.classList.add('block');
+        } else {
+          if (cell.special && P.special === 'circle') div.classList.add('special-circle');
+          if (cell.special && P.special === 'shaded') div.classList.add('special-shaded');
+          if (P.numbers[r][c]) {
+            const num = document.createElement('span');
+            num.className = 'num';
+            num.textContent = P.numbers[r][c];
+            div.appendChild(num);
+          }
+          const letter = document.createElement('span');
+          letter.className = 'letter';
+          div.appendChild(letter);
+          div.dataset.r = r;
+          div.dataset.c = c;
+        }
+        grid.appendChild(div);
+        rowEls.push(div);
+      }
+      cellEls.push(rowEls);
+    }
+  }
+
+  function updateCell(r, c) {
+    const div = cellEls[r][c];
+    if (!isOpen(r, c)) return;
+    const letter = div.querySelector('.letter');
+    const val = (S.rebusMode && S.cursor && S.cursor.r === r && S.cursor.c === c)
+      ? S.rebusBuf : S.fill[r][c];
+    letter.textContent = val;
+    letter.className = 'letter' + (val.length > 1 ? ' len-' + Math.min(val.length, 5) : '');
+    div.classList.toggle('pencil', S.pencil[r][c]);
+    div.classList.toggle('wrong', S.wrong[r][c]);
+    div.classList.toggle('revealed', S.revealed[r][c]);
+    div.classList.toggle('rebus-editing',
+      S.rebusMode && S.cursor && S.cursor.r === r && S.cursor.c === c);
+  }
+
+  function updateAllCells() {
+    for (let r = 0; r < P.height; r++) {
+      for (let c = 0; c < P.width; c++) updateCell(r, c);
+    }
+  }
+
+  function buildClueLists() {
+    const wrap = $('clue-columns');
+    wrap.innerHTML = '';
+    clueEls = {};
+
+    const uniclue = P.clues.length > 0 && P.clues.every(function (cl) { return cl.group === ''; });
+
+    const makeList = function (title, items, staticList) {
+      const section = document.createElement('div');
+      section.className = 'clue-list' + (staticList ? ' static' : '');
+      const h = document.createElement('h2');
+      h.textContent = title;
+      section.appendChild(h);
+      const ol = document.createElement('ol');
+      for (const item of items) {
+        const li = document.createElement('li');
+        const num = document.createElement('span');
+        num.className = 'cnum';
+        num.textContent = item.num;
+        const text = document.createElement('span');
+        text.innerHTML = XD.clueHTML(item.text);
+        li.appendChild(num);
+        li.appendChild(text);
+        if (item.entry) {
+          li.addEventListener('click', function () { selectEntry(item.entry); });
+          clueEls[item.entry.dir + item.entry.num] = li;
+        }
+        ol.appendChild(li);
+      }
+      section.appendChild(ol);
+      wrap.appendChild(section);
+    };
+
+    if (uniclue) {
+      // one combined list; each clue drives the first entry with its number
+      makeList('Clues', P.clues.map(function (cl) {
+        return {
+          num: cl.num,
+          text: cl.text,
+          entry: P.byKey['A' + cl.num] || P.byKey['D' + cl.num] || null,
+        };
+      }), false);
+    } else {
+      for (const dir of ['A', 'D']) {
+        const items = P.entries
+          .filter(function (e) { return e.dir === dir; })
+          .map(function (e) {
+            return { num: e.num, text: e.clues.length ? e.clues[0].text : '(no clue)', entry: e };
+          });
+        makeList(dir === 'A' ? 'Across' : 'Down', items, false);
+      }
+      // custom cluegroups (spec: Cluegroup header) shown as plain lists
+      const groups = {};
+      for (const cl of P.clues) {
+        if (cl.group === 'A' || cl.group === 'D' || cl.group === '') continue;
+        (groups[cl.group] = groups[cl.group] || []).push(cl);
+      }
+      for (const g of Object.keys(groups).sort()) {
+        makeList(P.cluegroups[g] || g, groups[g].map(function (cl) {
+          return { num: cl.num, text: cl.text, entry: null };
+        }), true);
+      }
+    }
+  }
+
+  // scroll only within the clue list's own scrollbox; scrollIntoView would
+  // scroll the page itself in the stacked layout and hide the grid
+  function scrollClueIntoList(li) {
+    const list = li.parentElement;
+    if (!list || list.scrollHeight <= list.clientHeight) return;
+    const lr = list.getBoundingClientRect();
+    const ir = li.getBoundingClientRect();
+    if (ir.top < lr.top) list.scrollTop += ir.top - lr.top;
+    else if (ir.bottom > lr.bottom) list.scrollTop += ir.bottom - lr.bottom;
+  }
+
+  function updateHighlights() {
+    for (const el of document.querySelectorAll('.cell.sel, .cell.word')) {
+      el.classList.remove('sel', 'word');
+    }
+    for (const key of Object.keys(clueEls)) {
+      clueEls[key].classList.remove('active', 'cross');
+      const e = P.byKey[key];
+      if (e) clueEls[key].classList.toggle('done', entryFilled(e));
+    }
+    if (!S.cursor) return;
+    const entry = currentEntry();
+    if (entry) {
+      for (const p of entry.cells) cellEls[p.r][p.c].classList.add('word');
+      const li = clueEls[entry.dir + entry.num];
+      if (li) {
+        li.classList.add('active');
+        scrollClueIntoList(li);
+      }
+      const crossDir = entry.dir === 'A' ? 'D' : 'A';
+      const cross = entryAt(S.cursor.r, S.cursor.c, crossDir);
+      if (cross && clueEls[cross.dir + cross.num]) {
+        clueEls[cross.dir + cross.num].classList.add('cross');
+      }
+    }
+    cellEls[S.cursor.r][S.cursor.c].classList.add('sel');
+    updateClueBar(entry);
+  }
+
+  function updateClueBar(entry) {
+    const bar = $('clue-bar');
+    if (!entry) { bar.hidden = true; return; }
+    bar.hidden = false;
+    const clue = entry.clues.length ? entry.clues[0] : null;
+    const dirName = entry.dir === 'A' ? 'Across' : 'Down';
+    $('clue-bar-num').textContent = entry.num + ' ' + dirName;
+    $('clue-bar-text').innerHTML = clue ? XD.clueHTML(clue.text) : '(no clue)';
+  }
+
+  // ---- timer ----------------------------------------------------------------
+
+  function formatTime(sec) {
+    const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+    const mm = (h ? String(m).padStart(2, '0') : m);
+    return (h ? h + ':' : '') + mm + ':' + String(s).padStart(2, '0');
+  }
+
+  function updateTimerDisplay() {
+    $('timer').textContent = formatTime(S.elapsed);
+  }
+
+  function startTimer() {
+    if (S.running || S.solved) return;
+    S.running = true;
+    $('pause-overlay').hidden = true;
+    $('btn-pause').textContent = 'Pause';
+    if (!timerInterval) {
+      timerInterval = setInterval(function () {
+        if (S && S.running) {
+          S.elapsed++;
+          updateTimerDisplay();
+          if (S.elapsed % 10 === 0) saveState();
+        }
+      }, 1000);
+    }
+  }
+
+  function pauseTimer(showOverlay) {
+    if (!S.running) return;
+    S.running = false;
+    if (showOverlay && !S.solved) $('pause-overlay').hidden = false;
+    $('btn-pause').textContent = 'Resume';
+    saveState();
+  }
+
+  // ---- game actions -----------------------------------------------------------
+
+  function selectCell(r, c, toggleIfSame) {
+    if (!isOpen(r, c)) return;
+    commitRebus();
+    if (toggleIfSame && S.cursor && S.cursor.r === r && S.cursor.c === c) {
+      S.dir = S.dir === 'A' ? 'D' : 'A';
+    }
+    S.cursor = { r: r, c: c };
+    // if no entry in this direction here, flip
+    if (!entryAt(r, c, S.dir) && entryAt(r, c, S.dir === 'A' ? 'D' : 'A')) {
+      S.dir = S.dir === 'A' ? 'D' : 'A';
+    }
+    updateHighlights();
+  }
+
+  function selectEntry(entry) {
+    commitRebus();
+    S.dir = entry.dir;
+    const p = firstEmptyCell(entry);
+    S.cursor = { r: p.r, c: p.c };
+    startTimer();
+    updateHighlights();
+    $('grid').focus();
+  }
+
+  function setCell(r, c, val, byPencil) {
+    if (isLocked(r, c)) return;
+    S.fill[r][c] = val;
+    S.pencil[r][c] = byPencil && val !== '';
+    S.wrong[r][c] = false;
+    if (S.autocheck && val !== '') {
+      const sol = P.cells[r][c].solution;
+      if (sol !== null) S.wrong[r][c] = val !== sol;
+    }
+    updateCell(r, c);
+    saveState();
+  }
+
+  function typeLetter(ch) {
+    if (!S.cursor) return;
+    startTimer();
+    setCell(S.cursor.r, S.cursor.c, ch.toUpperCase(), S.pencilMode);
+    advance();
+    checkCompletion();
+  }
+
+  function advance() {
+    const entry = currentEntry();
+    if (!entry) return;
+    const idx = entry.cells.findIndex(function (p) {
+      return p.r === S.cursor.r && p.c === S.cursor.c;
+    });
+    // next empty cell after the cursor within this entry
+    for (let i = idx + 1; i < entry.cells.length; i++) {
+      const p = entry.cells[i];
+      if (S.fill[p.r][p.c] === '') { S.cursor = { r: p.r, c: p.c }; updateHighlights(); return; }
+    }
+    if (entryFilled(entry)) {
+      const next = nextIncompleteEntry(entry);
+      S.dir = next.dir;
+      const p = firstEmptyCell(next);
+      S.cursor = { r: p.r, c: p.c };
+    } else {
+      // wrap to the first empty cell of the same entry
+      const p = firstEmptyCell(entry);
+      S.cursor = { r: p.r, c: p.c };
+    }
+    updateHighlights();
+  }
+
+  function backspace() {
+    if (!S.cursor) return;
+    const r = S.cursor.r, c = S.cursor.c;
+    if (S.fill[r][c] !== '' && !isLocked(r, c)) {
+      setCell(r, c, '', false);
+      return;
+    }
+    const entry = currentEntry();
+    if (!entry) return;
+    const idx = entry.cells.findIndex(function (p) { return p.r === r && p.c === c; });
+    let prev = null;
+    if (idx > 0) prev = entry.cells[idx - 1];
+    else {
+      const pe = nextEntry(entry, -1);
+      S.dir = pe.dir;
+      prev = pe.cells[pe.cells.length - 1];
+    }
+    S.cursor = { r: prev.r, c: prev.c };
+    if (!isLocked(prev.r, prev.c)) setCell(prev.r, prev.c, '', false);
+    updateHighlights();
+  }
+
+  function moveCursor(dr, dc) {
+    if (!S.cursor) return;
+    const moveDir = dr !== 0 ? 'D' : 'A';
+    if (moveDir !== S.dir) {
+      // first perpendicular arrow press only toggles direction (NYT behavior)
+      S.dir = moveDir;
+      updateHighlights();
+      return;
+    }
+    let r = S.cursor.r + dr, c = S.cursor.c + dc;
+    while (r >= 0 && r < P.height && c >= 0 && c < P.width) {
+      if (isOpen(r, c)) { selectCell(r, c, false); return; }
+      r += dr; c += dc;
+    }
+  }
+
+  // ---- check / reveal / clear ---------------------------------------------
+
+  function scopeCells(scope) {
+    if (!S.cursor && scope !== 'puzzle') return [];
+    if (scope === 'letter') return [S.cursor];
+    if (scope === 'word') {
+      const e = currentEntry();
+      return e ? e.cells : [];
+    }
+    const all = [];
+    for (let r = 0; r < P.height; r++) {
+      for (let c = 0; c < P.width; c++) if (isOpen(r, c)) all.push({ r: r, c: c });
+    }
+    return all;
+  }
+
+  function checkCells(scope) {
+    let unknown = 0;
+    for (const p of scopeCells(scope)) {
+      const sol = P.cells[p.r][p.c].solution;
+      if (sol === null) { unknown++; continue; }
+      if (S.fill[p.r][p.c] !== '') {
+        S.wrong[p.r][p.c] = S.fill[p.r][p.c] !== sol;
+        updateCell(p.r, p.c);
+      }
+    }
+    if (unknown) toast(unknown + ' square(s) have no solution in this puzzle and were not checked.');
+  }
+
+  function revealCells(scope) {
+    for (const p of scopeCells(scope)) {
+      const sol = P.cells[p.r][p.c].solution;
+      if (sol === null) continue;
+      if (S.fill[p.r][p.c] !== sol) {
+        S.fill[p.r][p.c] = sol;
+        S.revealed[p.r][p.c] = true;
+      }
+      S.wrong[p.r][p.c] = false;
+      S.pencil[p.r][p.c] = false;
+      updateCell(p.r, p.c);
+    }
+    saveState();
+    updateHighlights();
+    checkCompletion();
+  }
+
+  function clearPuzzle() {
+    if (!window.confirm('Clear all your entries and restart the timer?')) return;
+    const solved = S.solved;
+    S = Object.assign(freshState(), { autocheck: S.autocheck, pencilMode: S.pencilMode });
+    $('opt-autocheck').checked = S.autocheck;
+    saveState();
+    updateAllCells();
+    updateTimerDisplay();
+    updateHighlights();
+    if (solved) $('btn-pause').textContent = 'Pause';
+  }
+
+  function checkCompletion() {
+    if (S.solved) return;
+    let full = true, correct = true, checkable = false;
+    for (let r = 0; r < P.height; r++) {
+      for (let c = 0; c < P.width; c++) {
+        if (!isOpen(r, c)) continue;
+        if (S.fill[r][c] === '') { full = false; }
+        const sol = P.cells[r][c].solution;
+        if (sol !== null) {
+          checkable = true;
+          if (S.fill[r][c] !== sol) correct = false;
+        }
+      }
+    }
+    if (!full) return;
+    if (checkable && correct) {
+      S.solved = true;
+      S.running = false;
+      saveState();
+      $('done-text').textContent = 'You solved "' + (P.meta.title || 'this puzzle') +
+        '" in ' + formatTime(S.elapsed) + '.';
+      $('done-modal').hidden = false;
+      $('btn-pause').textContent = 'Pause';
+    } else if (checkable) {
+      toast('The puzzle is filled, but at least one square is wrong.');
+    } else {
+      toast('Puzzle filled. This puzzle has no solution to check against.');
+    }
+  }
+
+  // ---- rebus entry ----------------------------------------------------------
+
+  function startRebus() {
+    if (!S.cursor || isLocked(S.cursor.r, S.cursor.c)) return;
+    S.rebusMode = true;
+    S.rebusBuf = S.fill[S.cursor.r][S.cursor.c];
+    startTimer();
+    updateCell(S.cursor.r, S.cursor.c);
+    $('btn-rebus').classList.add('active');
+  }
+
+  function commitRebus() {
+    if (!S || !S.rebusMode) return;
+    const r = S.cursor.r, c = S.cursor.c;
+    S.rebusMode = false;
+    $('btn-rebus').classList.remove('active');
+    setCell(r, c, S.rebusBuf.toUpperCase(), S.pencilMode);
+    S.rebusBuf = '';
+    updateCell(r, c);
+    checkCompletion();
+  }
+
+  // ---- toast ----------------------------------------------------------------
+
+  function toast(msg) {
+    const el = $('toast');
+    el.textContent = msg;
+    el.hidden = false;
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(function () { el.hidden = true; }, 3500);
+  }
+
+  // ---- puzzle loading ---------------------------------------------------------
+
+  function loadPuzzle(text, silent) {
+    const puzzle = XD.parse(text); // throws on fatal errors
+    P = puzzle;
+    xdSource = text;
+    saveKey = 'histos-xw:' + hashText(text);
+    S = restoreState();
+
+    orderedEntries = P.entries.slice().sort(function (a, b) {
+      return a.dir === b.dir ? a.num - b.num : (a.dir === 'A' ? -1 : 1);
+    });
+
+    $('p-title').textContent = P.meta.title || 'Untitled';
+    const by = [];
+    if (P.meta.author) by.push('By ' + P.meta.author);
+    if (P.meta.editor) by.push('Edited by ' + P.meta.editor);
+    if (P.meta.date) by.push(P.meta.date);
+    $('p-byline').textContent = by.join(' · ');
+    document.title = (P.meta.title || 'Crossword') + ' · histos crossword';
+
+    $('notes-wrap').hidden = !P.notes;
+    $('p-notes').textContent = P.notes || '';
+
+    buildGrid();
+    buildClueLists();
+    updateAllCells();
+    updateTimerDisplay();
+    $('opt-autocheck').checked = S.autocheck;
+    $('btn-pencil').classList.toggle('active', S.pencilMode);
+    $('pause-overlay').hidden = true;
+    $('btn-pause').textContent = 'Pause';
+
+    // select the first entry
+    if (orderedEntries.length > 0) {
+      const first = orderedEntries[0];
+      S.dir = first.dir;
+      const p = firstEmptyCell(first);
+      S.cursor = { r: p.r, c: p.c };
+    }
+    updateHighlights();
+
+    if (!silent && P.warnings.length > 0) {
+      toast('Loaded with ' + P.warnings.length + ' warning(s); see the browser console.');
+      for (const w of P.warnings) console.warn('xd: ' + w);
+    }
+
+    const grid = $('grid');
+    if (grid && typeof grid.focus === 'function') grid.focus();
+  }
+
+  // ---- embedded + user puzzles ---------------------------------------------
+
+  function embeddedPuzzles() {
+    const out = [];
+    const tags = document.querySelectorAll('script[type="text/xd"]');
+    for (const tag of tags) {
+      const text = tag.textContent.trim();
+      if (!text) continue;
+      let name = tag.dataset.name;
+      if (!name) {
+        const m = text.match(/^Title\s*:\s*(.+)$/mi);
+        name = m ? m[1].trim() : 'Untitled';
+      }
+      out.push({ name: name, text: text });
+    }
+    return out;
+  }
+
+  function rebuildPuzzleSelect(selectedIndex) {
+    const select = $('puzzle-select');
+    select.innerHTML = '';
+    sessionPuzzles.forEach(function (p, i) {
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = p.name;
+      select.appendChild(opt);
+    });
+    select.value = String(selectedIndex);
+  }
+
+  function switchToPuzzle(i, silent) {
+    try {
+      loadPuzzle(sessionPuzzles[i].text, silent);
+    } catch (e) {
+      toast('Could not load "' + sessionPuzzles[i].name + '": ' + e.message);
+    }
+  }
+
+  // ---- load modal ------------------------------------------------------------
+
+  function openLoadModal() {
+    pauseTimer(false);
+    $('load-errors').hidden = true;
+    $('load-modal').hidden = false;
+    $('load-text').focus();
+  }
+
+  function closeLoadModal() {
+    $('load-modal').hidden = true;
+    $('load-text').value = '';
+    $('load-file').value = '';
+    $('grid').focus();
+  }
+
+  function tryLoadFromModal() {
+    const text = $('load-text').value.trim();
+    const errBox = $('load-errors');
+    if (!text) {
+      errBox.hidden = false;
+      errBox.className = '';
+      errBox.innerHTML = '<div class="err">Paste a .xd puzzle or choose a file first.</div>';
+      return;
+    }
+    let puzzle;
+    try {
+      puzzle = XD.parse(text);
+    } catch (e) {
+      errBox.hidden = false;
+      errBox.className = '';
+      errBox.innerHTML = '<div class="err"></div>';
+      errBox.firstChild.textContent = e.message;
+      return;
+    }
+    if (puzzle.warnings.length > 0 && !errBox.dataset.warned) {
+      // show warnings once; a second Load click proceeds anyway
+      errBox.hidden = false;
+      errBox.className = 'warnings-only';
+      errBox.dataset.warned = '1';
+      errBox.innerHTML = '<div>Loaded with warnings (click Load again to continue):</div>';
+      for (const w of puzzle.warnings) {
+        const d = document.createElement('div');
+        d.textContent = '• ' + w;
+        errBox.appendChild(d);
+      }
+      return;
+    }
+    delete errBox.dataset.warned;
+    sessionPuzzles.push({ name: (puzzle.meta.title || 'Pasted puzzle'), text: text });
+    rebuildPuzzleSelect(sessionPuzzles.length - 1);
+    closeLoadModal();
+    loadPuzzle(text, true);
+  }
+
+  // ---- event wiring ------------------------------------------------------------
+
+  function wireEvents() {
+    $('grid').addEventListener('click', function (ev) {
+      const div = ev.target.closest('.cell');
+      if (!div || div.dataset.r === undefined) return;
+      startTimer();
+      selectCell(parseInt(div.dataset.r, 10), parseInt(div.dataset.c, 10), true);
+    });
+
+    document.addEventListener('keydown', function (ev) {
+      if (!P || !S) return;
+      const t = ev.target;
+      if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT' || t.tagName === 'SELECT')) return;
+      if (!$('load-modal').hidden || !$('done-modal').hidden) {
+        if (ev.key === 'Escape') { $('load-modal').hidden = true; $('done-modal').hidden = true; }
+        return;
+      }
+      if (!$('pause-overlay').hidden) {
+        startTimer();
+        ev.preventDefault();
+        return;
+      }
+
+      if (S.rebusMode) {
+        if (/^[a-zA-Z0-9]$/.test(ev.key)) { S.rebusBuf += ev.key.toUpperCase(); updateCell(S.cursor.r, S.cursor.c); }
+        else if (ev.key === 'Backspace') { S.rebusBuf = S.rebusBuf.slice(0, -1); updateCell(S.cursor.r, S.cursor.c); }
+        else if (ev.key === 'Enter' || ev.key === 'Escape') { commitRebus(); advance(); updateHighlights(); }
+        ev.preventDefault();
+        return;
+      }
+
+      switch (ev.key) {
+        case 'ArrowUp': moveCursor(-1, 0); ev.preventDefault(); return;
+        case 'ArrowDown': moveCursor(1, 0); ev.preventDefault(); return;
+        case 'ArrowLeft': moveCursor(0, -1); ev.preventDefault(); return;
+        case 'ArrowRight': moveCursor(0, 1); ev.preventDefault(); return;
+        case ' ':
+          S.dir = S.dir === 'A' ? 'D' : 'A';
+          updateHighlights();
+          ev.preventDefault();
+          return;
+        case 'Tab':
+        case 'Enter': {
+          const e = currentEntry();
+          if (e) selectEntry(ev.shiftKey ? nextEntry(e, -1) : nextEntry(e, 1));
+          ev.preventDefault();
+          return;
+        }
+        case 'Backspace':
+        case 'Delete':
+          startTimer();
+          backspace();
+          ev.preventDefault();
+          return;
+        case 'Home':
+        case 'End': {
+          const e = currentEntry();
+          if (e) {
+            const p = ev.key === 'Home' ? e.cells[0] : e.cells[e.cells.length - 1];
+            selectCell(p.r, p.c, false);
+          }
+          ev.preventDefault();
+          return;
+        }
+        case 'Escape':
+          startRebus();
+          ev.preventDefault();
+          return;
+      }
+      if (/^[a-zA-Z]$/.test(ev.key) && !ev.metaKey && !ev.ctrlKey && !ev.altKey) {
+        typeLetter(ev.key);
+        ev.preventDefault();
+      }
+    });
+
+    $('btn-pause').addEventListener('click', function () {
+      if (S.running) pauseTimer(true); else startTimer();
+      this.blur();
+    });
+    $('btn-resume').addEventListener('click', function () { startTimer(); $('grid').focus(); });
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden && S && S.running) pauseTimer(true);
+    });
+
+    const closeMenus = function () {
+      for (const menu of document.querySelectorAll('details.menu[open]')) menu.open = false;
+    };
+    document.addEventListener('click', function (ev) {
+      if (!ev.target.closest('details.menu')) closeMenus();
+    });
+
+    document.querySelectorAll('[data-action]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const action = btn.dataset.action.split('-'); // ["check","word"]
+        startTimer();
+        if (action[0] === 'check') checkCells(action[1]);
+        else revealCells(action[1]);
+        closeMenus();
+        saveState();
+        $('grid').focus();
+      });
+    });
+
+    $('opt-autocheck').addEventListener('change', function () {
+      S.autocheck = this.checked;
+      if (S.autocheck) checkCells('puzzle');
+      saveState();
+    });
+
+    $('btn-clear').addEventListener('click', function () { clearPuzzle(); this.blur(); $('grid').focus(); });
+
+    $('btn-pencil').addEventListener('click', function () {
+      S.pencilMode = !S.pencilMode;
+      this.classList.toggle('active', S.pencilMode);
+      this.blur();
+      $('grid').focus();
+    });
+
+    $('btn-rebus').addEventListener('click', function () {
+      if (S.rebusMode) { commitRebus(); advance(); updateHighlights(); }
+      else startRebus();
+      this.blur();
+      $('grid').focus();
+    });
+
+    $('puzzle-select').addEventListener('change', function () {
+      switchToPuzzle(parseInt(this.value, 10), false);
+      this.blur();
+    });
+
+    $('btn-load').addEventListener('click', openLoadModal);
+    $('btn-load-cancel').addEventListener('click', closeLoadModal);
+    $('btn-load-confirm').addEventListener('click', tryLoadFromModal);
+    $('load-file').addEventListener('change', function () {
+      const file = this.files && this.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function () {
+        $('load-text').value = String(reader.result);
+        delete $('load-errors').dataset.warned;
+        $('load-errors').hidden = true;
+      };
+      reader.readAsText(file);
+    });
+
+    $('btn-done-close').addEventListener('click', function () {
+      $('done-modal').hidden = true;
+      $('grid').focus();
+    });
+
+    $('btn-theme').textContent = themeMode[0].toUpperCase() + themeMode.slice(1);
+    $('btn-theme').addEventListener('click', function () {
+      themeMode = THEMES[(THEMES.indexOf(themeMode) + 1) % THEMES.length];
+      applyTheme(themeMode);
+      localStorage.setItem(THEME_KEY, themeMode);
+      this.textContent = themeMode[0].toUpperCase() + themeMode.slice(1);
+      this.blur();
+    });
+
+    window.addEventListener('beforeunload', saveState);
+  }
+
+  // ---- boot ---------------------------------------------------------------------
+
+  document.addEventListener('DOMContentLoaded', function () {
+    for (const p of embeddedPuzzles()) sessionPuzzles.push(p);
+    wireEvents();
+    if (sessionPuzzles.length === 0) {
+      $('p-title').textContent = 'No puzzles embedded';
+      openLoadModal();
+      return;
+    }
+    rebuildPuzzleSelect(0);
+    switchToPuzzle(0, true);
+  });
+}).call(this);
+</script>
+
+
+<div id="app">
+  <header id="topbar">
+    <div id="puzzle-info">
+      <h1 id="p-title">Crossword</h1>
+      <span id="p-byline"></span>
+    </div>
+    <div id="toolbar">
+      <span id="timer" title="Elapsed time">0:00</span>
+      <button id="btn-pause" title="Pause the timer">Pause</button>
+      <details class="menu" id="menu-check">
+        <summary>Check</summary>
+        <div class="menu-items">
+          <button data-action="check-letter">Letter</button>
+          <button data-action="check-word">Word</button>
+          <button data-action="check-puzzle">Puzzle</button>
+          <label class="menu-toggle"><input type="checkbox" id="opt-autocheck"> Autocheck</label>
+        </div>
+      </details>
+      <details class="menu" id="menu-reveal">
+        <summary>Reveal</summary>
+        <div class="menu-items">
+          <button data-action="reveal-letter">Letter</button>
+          <button data-action="reveal-word">Word</button>
+          <button data-action="reveal-puzzle">Puzzle</button>
+        </div>
+      </details>
+      <button id="btn-clear" title="Clear all entries">Clear</button>
+      <button id="btn-pencil" title="Pencil mode (entries in gray)">Pencil</button>
+      <button id="btn-rebus" title="Enter multiple letters in one square (Esc)">Rebus</button>
+      <select id="puzzle-select" title="Choose a puzzle"></select>
+      <button id="btn-load" title="Load a .xd puzzle">Load .xd</button>
+      <button id="btn-theme" title="Color theme: follow system, or force light/dark">Auto</button>
+    </div>
+  </header>
+
+  <main id="board">
+    <div id="grid-wrap">
+      <div id="grid" tabindex="0" aria-label="crossword grid"></div>
+      <div id="clue-bar" hidden>
+        <span id="clue-bar-num"></span>
+        <span id="clue-bar-text"></span>
+      </div>
+      <div id="pause-overlay" hidden>
+        <p>Paused</p>
+        <button id="btn-resume">Resume</button>
+      </div>
+    </div>
+    <div id="clue-columns"></div>
+  </main>
+
+  <div id="notes-wrap" hidden>
+    <h2>Notes</h2>
+    <pre id="p-notes"></pre>
+  </div>
+
+  <div class="modal-backdrop" id="load-modal" hidden>
+    <div class="modal">
+      <h2>Load a .xd puzzle</h2>
+      <p>Paste the contents of a
+        <a href="https://github.com/century-arcade/xd/blob/master/doc/xd-format.md" target="_blank" rel="noopener">.xd file</a>
+        or choose one from disk.</p>
+      <textarea id="load-text" rows="14" spellcheck="false"
+        placeholder="Title: My Puzzle&#10;Author: Me&#10;&#10;&#10;CAT&#10;ERA&#10;WED&#10;&#10;&#10;A1. Feline ~ CAT&#10;..."></textarea>
+      <div class="modal-row">
+        <input type="file" id="load-file" accept=".xd,text/plain">
+      </div>
+      <div id="load-errors" hidden></div>
+      <div class="modal-row modal-actions">
+        <button id="btn-load-cancel">Cancel</button>
+        <button id="btn-load-confirm" class="primary">Load</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="done-modal" hidden>
+    <div class="modal">
+      <h2>Congratulations!</h2>
+      <p id="done-text">You solved the puzzle.</p>
+      <div class="modal-row modal-actions">
+        <button id="btn-done-close" class="primary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" hidden></div>
+</div>
+
+
+<script type="text/xd" data-name="MC Mini - Easy (5x5)">
+Title: MC Mini - Easy
+Author: histos examples
+Date: 2026-07-11
+
+
+HORSE
+O#O#G
+R#DIG
+N##C#
+#HOES
+
+
+A1. Mob you can saddle up and ride ~ HORSE
+A4. What you do with a shovel ~ DIG
+A6. Tools that turn dirt into farmland ~ HOES
+
+D1. Goat drop you can blow like a trumpet ~ HORN
+D2. Fishing ___ ~ ROD
+D3. What a chicken drops every few minutes ~ EGG
+D5. Slippery block from a frozen lake ~ ICE
+</script>
+
+
+<script type="text/xd" data-name="MC Medium (15x15)">
+Title: MC Medium
+Author: histos examples
+Date: 2026-07-11
+
+
+BAT#GUI##R#####
+E#I#E##HEALING#
+E#COMB#O#W##A##
+F#K##O#E##J#PVE
+###CROPS#BUD##N
+###U#K##B#M#D#D
+##PRESSUREPLATE
+B##S#H##U###W#R
+OOZE#E##T#SUN#M
+O####L#WEB####A
+K#N#AFK###GROAN
+S#O#I###BAR#A##
+##TURTLE##I#KEY
+##C##N##BEDS#Y#
+#PHANTOM####JEB
+
+
+A1. Cave flapper that drops nothing ~ BAT
+A3. Inventory screen, e.g., for short ~ GUI
+A5. Potion of ___ (instant health) ~ HEALING
+A7. Honeycomb half? ~ COMB
+A10. Fighting mobs rather than players, briefly ~ PVE
+A12. Wheat, carrots, and potatoes ~ CROPS
+A13. Small amethyst growth ~ BUD
+A16. Redstone trigger you step on ~ PRESSUREPLATE
+A18. Gooey stuff a slime seems made of ~ OOZE
+A19. Square light source that starts the day ~ SUN
+A20. Spider block that slows you down ~ WEB
+A22. Away at the fish farm, maybe, for short ~ AFK
+A23. Zombie's sound ~ GROAN
+A25. Hunger or health display ~ BAR
+A26. Beach mob whose scutes make a helmet ~ TURTLE
+A28. Trial ___ (vault opener) ~ KEY
+A30. They explode in the Nether ~ BEDS
+A31. Flying mob that hunts the sleepless ~ PHANTOM
+A32. Mojang lead whose name turns sheep rainbow ~ JEB
+
+D1. Raw cow drop ~ BEEF
+D2. A twentieth of a Minecraft second ~ TICK
+D3. Emerald or diamond, essentially ~ GEM
+D4. Like meat before the furnace ~ RAW
+D5. Farmland-making tools ~ HOES
+D6. Skip the night, briefly? ~ NAP
+D8. Enchanting table's power booster ~ BOOKSHELF
+D9. Space-bar action ~ JUMP
+D11. Tall mob that hates being looked at ~ ENDERMAN
+D12. Binding or Vanishing enchantment ~ CURSE
+D14. Piglin ___ (bastion guard) ~ BRUTE
+D15. When the undead start burning ~ DAWN
+D17. Enchantable page-turners ~ BOOKS
+D21. Minecraft's original creator ~ NOTCH
+D22. Bubble-bar concern underwater ~ AIR
+D23. Crafting table's 3x3 layout ~ GRID
+D24. Default sapling type ~ OAK
+D27. Blast block ~ TNT
+D29. ___ of Ender, stronghold finder ~ EYE
+</script>
+
+
+<script type="text/xd" data-name="MC Hard (21x21)">
+Title: MC Hard
+Author: histos examples
+Date: 2026-07-11
+
+
+#S#MINER#########SIGN
+#T#U##Y#MAGMACUBE###A
+#RED#MENU##E#O##X#PUP
+#I######N##ANDESITE##
+#DIG#WASD##L##N#T#O##
+#E###A##AFK#MODS#INK#
+#R#VEX##N##E###U##Y#S
+##C####PEARL#IOS#C##E
+#FARMS#V#X#D##A#COCOA
+##C####P#OMEN#K##R##L
+##TUFF###L#R###CYAN#A
+##I##OCELOT##L#A#L##N
+#N#FIR###T#STAIR##S#T
+#Y#P#TEMPLE##V#TURTLE
+GLASS##U####FANS##A#R
+#I###R#L####U#####LAN
+#U##ENDERCHEST###S#Z#
+#MOO#G###H##E##D#M#A#
+E#R#A##K#I###A#E#PALE
+SWEEP#WITCH#HIDE###E#
+C#S#P##T#K###M#PANDA#
+
+
+A2. One with a diamond habit? ~ MINER
+A4. It holds four lines of text ~ SIGN
+A6. Bouncy Nether hostile that splits when slain ~ MAGMACUBE
+A10. Mushroom variety with white spots ~ RED
+A11. Esc destination ~ MENU
+A12. Product of two fed wolves ~ PUP
+A13. Igneous cousin of diorite ~ ANDESITE
+A15. Branch-mining verb ~ DIG
+A16. PC movement quartet ~ WASD
+A17. Like many an XP-farm player, briefly ~ AFK
+A18. Forge or Fabric add-ons ~ MODS
+A20. Sac contents from a squid ~ INK
+A21. Evoker's winged summon ~ VEX
+A25. Teleporting toss, familiarly ~ PEARL
+A27. Pocket Edition platform ~ IOS
+A30. Iron and creeper setups ~ FARMS
+A31. Jungle-log bean ~ COCOA
+A32. Bad ___, raid trigger ~ OMEN
+A33. Deepslate-layer rock with a punny name ~ TUFF
+A35. Dye between blue and green ~ CYAN
+A36. Jungle cat that creepers avoid ~ OCELOT
+A39. Spruce lookalike ~ FIR
+A40. Shape cut for climbing ~ STAIR
+A42. Desert or jungle structure ~ TEMPLE
+A44. Master of one potion ~ TURTLE
+A45. Smelted sand ~ GLASS
+A46. Minecon attendees ~ FANS
+A48. Open to ___ (local multiplayer option) ~ LAN
+A50. Storage that follows you everywhere ~ ENDERCHEST
+A53. Sound before beef? ~ MOO
+A60. ___ Garden, creaking biome ~ PALE
+A61. ___ing Edge enchantment ~ SWEEP
+A62. Hut dweller who drinks on the job ~ WITCH
+A63. Rabbit drop ~ HIDE
+A64. Bamboo muncher that may be lazy ~ PANDA
+
+D1. Lava-walking mount ~ STRIDER
+D2. Dirt after a water bottle ~ MUD
+D3. ___ of Ender ~ EYE
+D5. Phantom prevention? ~ NAP
+D6. Potion brewed by mistake, often ~ MUNDANE
+D7. Bone ___, crop accelerant ~ MEAL
+D8. Most common catch ~ COD
+D9. Save-and-quit option ~ EXIT
+D12. Two-block-tall pink flower ~ PEONY
+D14. Dragon's dimension, with "The" ~ END
+D16. Copper preserver ~ WAX
+D19. Like some stew and sand, in shorthand ~ SUS
+D22. ___ Guardian, mining-fatigue giver ~ ELDER
+D23. Prismarine light source ~ SEALANTERN
+D24. Desert hazards ~ CACTI
+D25. Duel format, briefly ~ PVP
+D26. Bucketable pink cave critter ~ AXOLOTL
+D28. Pale ___ (creaking wood) ~ OAK
+D29. Warm-ocean growth that grays out of water ~ CORAL
+D34. Blaze fortress, for short ~ FORT
+D35. Rail riders ~ CARTS
+D37. Obsidian ingredient ~ LAVA
+D38. Netherrack with fungal growth ~ NYLIUM
+D39. F3 stat ~ FPS
+D41. C418 music disc with a jazzy track ~ STAL
+D43. Chest-carrying hybrid ~ MULE
+D46. It hisses before the boom ~ FUSE
+D47. Loot-table luck, for short ~ RNG
+D49. Tree above a lush cave ~ AZALEA
+D51. Egg-throw success ~ CHICK
+D52. Multiplayer server type, for short ~ SMP
+D54. Fortune targets ~ ORES
+D55. ___ Dark ~ DEEP
+D56. Pause key ~ ESC
+D57. Minecraft, on a phone ~ APP
+D58. PvP loadout ~ KIT
+D59. Bow skill ~ AIM
+</script>
+
+
+</body></html>
