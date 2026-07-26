@@ -1,15 +1,16 @@
 <!DOCTYPE html><html><head>
 
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1">
-<title>Crossword MC - histos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minecraft Crossword</title>
 <meta name="description" content="A Minecraft-styled crossword game for .xd puzzles, packed into one HTML file.">
-<meta name="author" content="histos examples">
+<meta name="author" content="Che Heavy ETL">
 <meta name="keywords" content="crossword, xd, javascript, histos, offline, minecraft">
 
 
-<link rel="icon" type="image/(favicon.mime_type)" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3QgeD0iMSIgeT0iMSIgd2lkdGg9IjMwIiBoZWlnaHQ9IjMwIiByeD0iNCIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSIjMTIxMjEyIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8cmVjdCB4PSIyIiB5PSIyIiB3aWR0aD0iMTQiIGhlaWdodD0iMTQiIGZpbGw9IiMxMjEyMTIiLz4KICA8cmVjdCB4PSIxNiIgeT0iMTYiIHdpZHRoPSIxNCIgaGVpZ2h0PSIxNCIgZmlsbD0iI2ZmZGEwMCIvPgogIDx0ZXh0IHg9IjIzIiB5PSIxMyIgZm9udC1mYW1pbHk9IkhlbHZldGljYSwgQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSJib2xkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMTIxMjEyIj5BPC90ZXh0PgogIDx0ZXh0IHg9IjkiIHk9IjI3IiBmb250LWZhbWlseT0iSGVsdmV0aWNhLCBBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMxMjEyMTIiPlo8L3RleHQ+Cjwvc3ZnPgo=">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOCAxOCIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjE4IiBoZWlnaHQ9IjEiIGZpbGw9IiM3ZmIyMzgiLz4KPHJlY3QgeD0iMCIgeT0iMSIgd2lkdGg9IjIiIGhlaWdodD0iMSIgZmlsbD0iIzdmYjIzOCIvPgo8cmVjdCB4PSIyIiB5PSIxIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNWU4YjJmIi8+CjxyZWN0IHg9IjMiIHk9IjEiIHdpZHRoPSI4IiBoZWlnaHQ9IjEiIGZpbGw9IiM3ZmIyMzgiLz4KPHJlY3QgeD0iMTEiIHk9IjEiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM1ZThiMmYiLz4KPHJlY3QgeD0iMTIiIHk9IjEiIHdpZHRoPSI2IiBoZWlnaHQ9IjEiIGZpbGw9IiM3ZmIyMzgiLz4KPHJlY3QgeD0iMCIgeT0iMiIgd2lkdGg9IjUiIGhlaWdodD0iMSIgZmlsbD0iIzdmYjIzOCIvPgo8cmVjdCB4PSI1IiB5PSIyIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNWU4YjJmIi8+CjxyZWN0IHg9IjYiIHk9IjIiIHdpZHRoPSI5IiBoZWlnaHQ9IjEiIGZpbGw9IiM3ZmIyMzgiLz4KPHJlY3QgeD0iMTUiIHk9IjIiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM1ZThiMmYiLz4KPHJlY3QgeD0iMTYiIHk9IjIiIHdpZHRoPSIyIiBoZWlnaHQ9IjEiIGZpbGw9IiM3ZmIyMzgiLz4KPHJlY3QgeD0iMCIgeT0iMyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzVlOGIyZiIvPgo8cmVjdCB4PSIxIiB5PSIzIiB3aWR0aD0iOSIgaGVpZ2h0PSIxIiBmaWxsPSIjN2ZiMjM4Ii8+CjxyZWN0IHg9IjEwIiB5PSIzIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNWU4YjJmIi8+CjxyZWN0IHg9IjExIiB5PSIzIiB3aWR0aD0iNyIgaGVpZ2h0PSIxIiBmaWxsPSIjN2ZiMjM4Ii8+CjxyZWN0IHg9IjAiIHk9IjQiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM3ZmIyMzgiLz4KPHJlY3QgeD0iMSIgeT0iNCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzVlOGIyZiIvPgo8cmVjdCB4PSIyIiB5PSI0IiB3aWR0aD0iMyIgaGVpZ2h0PSIxIiBmaWxsPSIjN2ZiMjM4Ii8+CjxyZWN0IHg9IjUiIHk9IjQiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iNiIgeT0iNCIgd2lkdGg9IjMiIGhlaWdodD0iMSIgZmlsbD0iIzdmYjIzOCIvPgo8cmVjdCB4PSI5IiB5PSI0IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNWU4YjJmIi8+CjxyZWN0IHg9IjEwIiB5PSI0IiB3aWR0aD0iMiIgaGVpZ2h0PSIxIiBmaWxsPSIjN2ZiMjM4Ii8+CjxyZWN0IHg9IjEyIiB5PSI0IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjEzIiB5PSI0IiB3aWR0aD0iNCIgaGVpZ2h0PSIxIiBmaWxsPSIjN2ZiMjM4Ii8+CjxyZWN0IHg9IjE3IiB5PSI0IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNWU4YjJmIi8+CjxyZWN0IHg9IjAiIHk9IjUiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iMSIgeT0iNSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzdmYjIzOCIvPgo8cmVjdCB4PSIyIiB5PSI1IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjMiIHk9IjUiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM0NjM2MmEiLz4KPHJlY3QgeD0iNCIgeT0iNSIgd2lkdGg9IjIiIGhlaWdodD0iMSIgZmlsbD0iIzVhNDYzMyIvPgo8cmVjdCB4PSI2IiB5PSI1IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjN2ZiMjM4Ii8+CjxyZWN0IHg9IjciIHk9IjUiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM2YjU3M2YiLz4KPHJlY3QgeD0iOCIgeT0iNSIgd2lkdGg9IjQiIGhlaWdodD0iMSIgZmlsbD0iIzVhNDYzMyIvPgo8cmVjdCB4PSIxMiIgeT0iNSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzdmYjIzOCIvPgo8cmVjdCB4PSIxMyIgeT0iNSIgd2lkdGg9IjIiIGhlaWdodD0iMSIgZmlsbD0iIzVhNDYzMyIvPgo8cmVjdCB4PSIxNSIgeT0iNSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzQ2MzYyYSIvPgo8cmVjdCB4PSIxNiIgeT0iNSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzdmYjIzOCIvPgo8cmVjdCB4PSIxNyIgeT0iNSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzVhNDYzMyIvPgo8cmVjdCB4PSIwIiB5PSI2IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjEiIHk9IjYiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM2YjU3M2YiLz4KPHJlY3QgeD0iMiIgeT0iNiIgd2lkdGg9IjIiIGhlaWdodD0iMSIgZmlsbD0iIzVhNDYzMyIvPgo8cmVjdCB4PSI0IiB5PSI2IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNDYzNjJhIi8+CjxyZWN0IHg9IjUiIHk9IjYiIHdpZHRoPSI0IiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iOSIgeT0iNiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzZiNTczZiIvPgo8cmVjdCB4PSIxMCIgeT0iNiIgd2lkdGg9IjMiIGhlaWdodD0iMSIgZmlsbD0iIzVhNDYzMyIvPgo8cmVjdCB4PSIxMyIgeT0iNiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzQ2MzYyYSIvPgo8cmVjdCB4PSIxNCIgeT0iNiIgd2lkdGg9IjQiIGhlaWdodD0iMSIgZmlsbD0iIzVhNDYzMyIvPgo8cmVjdCB4PSIwIiB5PSI3IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNDYzNjJhIi8+CjxyZWN0IHg9IjEiIHk9IjciIHdpZHRoPSI0IiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iNSIgeT0iNyIgd2lkdGg9IjQiIGhlaWdodD0iMSIgZmlsbD0iI2ZmZDgzZCIvPgo8cmVjdCB4PSI5IiB5PSI3IiB3aWR0aD0iNCIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjEzIiB5PSI3IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNmI1NzNmIi8+CjxyZWN0IHg9IjE0IiB5PSI3IiB3aWR0aD0iMiIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjE2IiB5PSI3IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNDYzNjJhIi8+CjxyZWN0IHg9IjE3IiB5PSI3IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjAiIHk9IjgiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iMSIgeT0iOCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzZiNTczZiIvPgo8cmVjdCB4PSIyIiB5PSI4IiB3aWR0aD0iMiIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjQiIHk9IjgiIHdpZHRoPSIyIiBoZWlnaHQ9IjEiIGZpbGw9IiNmZmQ4M2QiLz4KPHJlY3QgeD0iNiIgeT0iOCIgd2lkdGg9IjIiIGhlaWdodD0iMSIgZmlsbD0iIzVhNDYzMyIvPgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMiIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZkODNkIi8+CjxyZWN0IHg9IjEwIiB5PSI4IiB3aWR0aD0iOCIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjAiIHk9IjkiIHdpZHRoPSIzIiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iMyIgeT0iOSIgd2lkdGg9IjIiIGhlaWdodD0iMSIgZmlsbD0iI2ZmZDgzZCIvPgo8cmVjdCB4PSI1IiB5PSI5IiB3aWR0aD0iNCIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjkiIHk9IjkiIHdpZHRoPSIyIiBoZWlnaHQ9IjEiIGZpbGw9IiNmZmQ4M2QiLz4KPHJlY3QgeD0iMTEiIHk9IjkiIHdpZHRoPSI0IiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iMTUiIHk9IjkiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM2YjU3M2YiLz4KPHJlY3QgeD0iMTYiIHk9IjkiIHdpZHRoPSIyIiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iMCIgeT0iMTAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM0NjM2MmEiLz4KPHJlY3QgeD0iMSIgeT0iMTAiIHdpZHRoPSIyIiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iMyIgeT0iMTAiIHdpZHRoPSIyIiBoZWlnaHQ9IjEiIGZpbGw9IiNmZmQ4M2QiLz4KPHJlY3QgeD0iNSIgeT0iMTAiIHdpZHRoPSI0IiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iOSIgeT0iMTAiIHdpZHRoPSIyIiBoZWlnaHQ9IjEiIGZpbGw9IiNmZmQ4M2QiLz4KPHJlY3QgeD0iMTEiIHk9IjEwIiB3aWR0aD0iMiIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjEzIiB5PSIxMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzQ2MzYyYSIvPgo8cmVjdCB4PSIxNCIgeT0iMTAiIHdpZHRoPSI0IiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iMCIgeT0iMTEiIHdpZHRoPSIzIiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iMyIgeT0iMTEiIHdpZHRoPSI4IiBoZWlnaHQ9IjEiIGZpbGw9IiNmZmQ4M2QiLz4KPHJlY3QgeD0iMTEiIHk9IjExIiB3aWR0aD0iNiIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjE3IiB5PSIxMSIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzQ2MzYyYSIvPgo8cmVjdCB4PSIwIiB5PSIxMiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzVhNDYzMyIvPgo8cmVjdCB4PSIxIiB5PSIxMiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzZiNTczZiIvPgo8cmVjdCB4PSIyIiB5PSIxMiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzVhNDYzMyIvPgo8cmVjdCB4PSIzIiB5PSIxMiIgd2lkdGg9IjgiIGhlaWdodD0iMSIgZmlsbD0iI2ZmZDgzZCIvPgo8cmVjdCB4PSIxMSIgeT0iMTIiIHdpZHRoPSIyIiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iMTMiIHk9IjEyIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNmI1NzNmIi8+CjxyZWN0IHg9IjE0IiB5PSIxMiIgd2lkdGg9IjQiIGhlaWdodD0iMSIgZmlsbD0iIzVhNDYzMyIvPgo8cmVjdCB4PSIwIiB5PSIxMyIgd2lkdGg9IjMiIGhlaWdodD0iMSIgZmlsbD0iIzVhNDYzMyIvPgo8cmVjdCB4PSIzIiB5PSIxMyIgd2lkdGg9IjIiIGhlaWdodD0iMSIgZmlsbD0iI2ZmZDgzZCIvPgo8cmVjdCB4PSI1IiB5PSIxMyIgd2lkdGg9IjQiIGhlaWdodD0iMSIgZmlsbD0iIzVhNDYzMyIvPgo8cmVjdCB4PSI5IiB5PSIxMyIgd2lkdGg9IjIiIGhlaWdodD0iMSIgZmlsbD0iI2ZmZDgzZCIvPgo8cmVjdCB4PSIxMSIgeT0iMTMiIHdpZHRoPSI2IiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iMTciIHk9IjEzIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNmI1NzNmIi8+CjxyZWN0IHg9IjAiIHk9IjE0IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNDYzNjJhIi8+CjxyZWN0IHg9IjEiIHk9IjE0IiB3aWR0aD0iMiIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjMiIHk9IjE0IiB3aWR0aD0iMiIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZkODNkIi8+CjxyZWN0IHg9IjUiIHk9IjE0IiB3aWR0aD0iNCIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjkiIHk9IjE0IiB3aWR0aD0iMiIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZkODNkIi8+CjxyZWN0IHg9IjExIiB5PSIxNCIgd2lkdGg9IjIiIGhlaWdodD0iMSIgZmlsbD0iIzVhNDYzMyIvPgo8cmVjdCB4PSIxMyIgeT0iMTQiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM0NjM2MmEiLz4KPHJlY3QgeD0iMTQiIHk9IjE0IiB3aWR0aD0iNCIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjAiIHk9IjE1IiB3aWR0aD0iMyIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjMiIHk9IjE1IiB3aWR0aD0iMiIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZkODNkIi8+CjxyZWN0IHg9IjUiIHk9IjE1IiB3aWR0aD0iNCIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjkiIHk9IjE1IiB3aWR0aD0iMiIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZkODNkIi8+CjxyZWN0IHg9IjExIiB5PSIxNSIgd2lkdGg9IjUiIGhlaWdodD0iMSIgZmlsbD0iIzVhNDYzMyIvPgo8cmVjdCB4PSIxNiIgeT0iMTUiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM0NjM2MmEiLz4KPHJlY3QgeD0iMTciIHk9IjE1IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjAiIHk9IjE2IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjEiIHk9IjE2IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNmI1NzNmIi8+CjxyZWN0IHg9IjIiIHk9IjE2IiB3aWR0aD0iNCIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjYiIHk9IjE2IiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjNDYzNjJhIi8+CjxyZWN0IHg9IjciIHk9IjE2IiB3aWR0aD0iNCIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjExIiB5PSIxNiIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzZiNTczZiIvPgo8cmVjdCB4PSIxMiIgeT0iMTYiIHdpZHRoPSI2IiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iMCIgeT0iMTciIHdpZHRoPSI0IiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iNCIgeT0iMTciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM0NjM2MmEiLz4KPHJlY3QgeD0iNSIgeT0iMTciIHdpZHRoPSI0IiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPHJlY3QgeD0iOSIgeT0iMTciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM2YjU3M2YiLz4KPHJlY3QgeD0iMTAiIHk9IjE3IiB3aWR0aD0iNiIgaGVpZ2h0PSIxIiBmaWxsPSIjNWE0NjMzIi8+CjxyZWN0IHg9IjE2IiB5PSIxNyIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0iIzQ2MzYyYSIvPgo8cmVjdCB4PSIxNyIgeT0iMTciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM1YTQ2MzMiLz4KPC9zdmc+Cg==">
 
+<link rel="apple-touch-icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAClElEQVR42u3csU0EQQwF0KuHhOAkRILIrgUkAhqgCAqgG6qhG64B5MQajcd+0k/31me/aHbky9fPs8i/uWiBwCFwCBwCh8AhcAgcAofAEeTj+zHItFb26wYccMABBxxwwAEHHHDAAQcccMABBxxwwKHRc1HCAQcccMABBxxMwAEHHHDAAQcccMABR38cxoAsHHDAAQcccMABBxxwwAEHHHDAAQccMhdHzXa8365BThz/rn+U+b9wwAEHHHDAAQcccMABBxxwwAEHHHDA0R9Hpuj42dvTQ5D42UxVn2+vQTLvXVdz5pfjPmfeCwcccMABBxxwwAEHHHDAAQcccMABBxzTcaxr9Do6meyCVbMbcMABBxxwwAEHHHDAAQcccMABBxxwwNEfR82y/n5ftqQfysx84YADDjjggAMOOOCAAw444IADDjjggKM/jl1F7xrhiXTGfVuBAw444IADDjjggAMOOOCAAw444IADjiI4po3B0TsccMABBxxwwAEHHHDAAQcccMABBxxwzMKx7oIxHFYwwAEHHHDAAQcccMABBxxwwAEHHHDAAUd1HP3WKExb37AOJRxwwAEHHHDAAQcccMABBxxwwAEHHHBMx5G5vApHhUvCRfdzwAEHHHDAAQcccMABBxxwwAEHHHDAAccROFww7n18HqOEAw444IADDjjUDAcccMABBxxwwAEHHP1xWMFgBYP9HHDAAQcccMABBxxwwAEHHHDAAQcccNhD6ii65/F5hh0ccMABBxxwwKFmOOCAAw444IADDjjgmI6j5mqAmofNNXtVdD8HHHDAAQcccMABBxxwwAEHHHDAAQcccByBw4BPH3DRbytwwAEHHHDAAQcccMABBxxwwAEHHHDAUaPPd80WqDBTtWSAAAAAAElFTkSuQmCC">
 
 <style>/* base.css: reset, variables, theme */
 
@@ -271,6 +272,21 @@ a { color: var(--accent); }
 }
 
 /* ---- grid ---- */
+
+/* focus carrier for the virtual keyboard: visually gone but still focusable
+   (display:none/visibility:hidden would not summon the keyboard) */
+#kbd {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  border: 0;
+  padding: 0;
+  font-size: 16px; /* smaller would trigger the iOS focus zoom */
+  pointer-events: none;
+}
 
 #grid {
   display: grid;
@@ -1124,6 +1140,17 @@ button.active, button.primary {
 
   const $ = function (id) { return document.getElementById(id); };
 
+  // Focus goes to the hidden #kbd input, not the grid div: mobile browsers
+  // only raise the virtual keyboard for an editable element. Its value is
+  // kept at a one-space sentinel so a soft-keyboard backspace (which many
+  // keyboards report as key 'Unidentified') still produces an input event.
+  const KBD_SENTINEL = ' ';
+  function focusGrid() {
+    const kbd = $('kbd');
+    kbd.value = KBD_SENTINEL;
+    kbd.focus({ preventScroll: true });
+  }
+
   // ---- theme --------------------------------------------------------------
   // 'auto' follows prefers-color-scheme; 'light'/'dark' force via the
   // data-theme attribute that base.css (and theme layers) key on.
@@ -1496,7 +1523,7 @@ button.active, button.primary {
     S.cursor = { r: p.r, c: p.c };
     startTimer();
     updateHighlights();
-    $('grid').focus();
+    focusGrid();
   }
 
   function setCell(r, c, val, byPencil) {
@@ -1749,8 +1776,7 @@ button.active, button.primary {
       for (const w of P.warnings) console.warn('xd: ' + w);
     }
 
-    const grid = $('grid');
-    if (grid && typeof grid.focus === 'function') grid.focus();
+    focusGrid();
   }
 
   // ---- embedded + user puzzles ---------------------------------------------
@@ -1804,7 +1830,7 @@ button.active, button.primary {
     $('load-modal').hidden = true;
     $('load-text').value = '';
     $('load-file').value = '';
-    $('grid').focus();
+    focusGrid();
   }
 
   function tryLoadFromModal() {
@@ -1854,12 +1880,42 @@ button.active, button.primary {
       if (!div || div.dataset.r === undefined) return;
       startTimer();
       selectCell(parseInt(div.dataset.r, 10), parseInt(div.dataset.c, 10), true);
+      focusGrid();
+    });
+
+    // Soft-keyboard path: letters arrive as input events on #kbd (keydown is
+    // often 'Unidentified' there); hardware keyboards are handled by the
+    // document keydown listener below, which preventDefaults everything it
+    // consumes so nothing is processed twice.
+    $('kbd').addEventListener('input', function () {
+      const typed = this.value;
+      this.value = KBD_SENTINEL;
+      if (!P || !S) return;
+      if (!$('load-modal').hidden || !$('done-modal').hidden) return;
+      if (!$('pause-overlay').hidden) { startTimer(); return; }
+      if (typed.length < KBD_SENTINEL.length) {
+        // the sentinel was deleted: backspace
+        if (S.rebusMode) { S.rebusBuf = S.rebusBuf.slice(0, -1); updateCell(S.cursor.r, S.cursor.c); }
+        else { startTimer(); backspace(); }
+        return;
+      }
+      for (const ch of typed.slice(KBD_SENTINEL.length)) {
+        if (S.rebusMode) {
+          if (/^[a-zA-Z0-9]$/.test(ch)) { S.rebusBuf += ch.toUpperCase(); updateCell(S.cursor.r, S.cursor.c); }
+        } else if (/^[a-zA-Z]$/.test(ch)) {
+          typeLetter(ch);
+        } else if (ch === ' ') {
+          S.dir = S.dir === 'A' ? 'D' : 'A';
+          updateHighlights();
+        }
+      }
     });
 
     document.addEventListener('keydown', function (ev) {
       if (!P || !S) return;
       const t = ev.target;
-      if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT' || t.tagName === 'SELECT')) return;
+      if (t && t.id !== 'kbd' &&
+          (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT' || t.tagName === 'SELECT')) return;
       if (!$('load-modal').hidden || !$('done-modal').hidden) {
         if (ev.key === 'Escape') { $('load-modal').hidden = true; $('done-modal').hidden = true; }
         return;
@@ -1926,7 +1982,7 @@ button.active, button.primary {
       if (S.running) pauseTimer(true); else startTimer();
       this.blur();
     });
-    $('btn-resume').addEventListener('click', function () { startTimer(); $('grid').focus(); });
+    $('btn-resume').addEventListener('click', function () { startTimer(); focusGrid(); });
 
     document.addEventListener('visibilitychange', function () {
       if (document.hidden && S && S.running) pauseTimer(true);
@@ -1947,7 +2003,7 @@ button.active, button.primary {
         else revealCells(action[1]);
         closeMenus();
         saveState();
-        $('grid').focus();
+        focusGrid();
       });
     });
 
@@ -1957,20 +2013,20 @@ button.active, button.primary {
       saveState();
     });
 
-    $('btn-clear').addEventListener('click', function () { clearPuzzle(); this.blur(); $('grid').focus(); });
+    $('btn-clear').addEventListener('click', function () { clearPuzzle(); this.blur(); focusGrid(); });
 
     $('btn-pencil').addEventListener('click', function () {
       S.pencilMode = !S.pencilMode;
       this.classList.toggle('active', S.pencilMode);
       this.blur();
-      $('grid').focus();
+      focusGrid();
     });
 
     $('btn-rebus').addEventListener('click', function () {
       if (S.rebusMode) { commitRebus(); advance(); updateHighlights(); }
       else startRebus();
       this.blur();
-      $('grid').focus();
+      focusGrid();
     });
 
     $('puzzle-select').addEventListener('change', function () {
@@ -1995,7 +2051,7 @@ button.active, button.primary {
 
     $('btn-done-close').addEventListener('click', function () {
       $('done-modal').hidden = true;
-      $('grid').focus();
+      focusGrid();
     });
 
     $('btn-theme').textContent = themeMode[0].toUpperCase() + themeMode.slice(1);
@@ -2064,6 +2120,11 @@ button.active, button.primary {
 
   <main id="board">
     <div id="grid-wrap">
+      <!-- invisible input that holds focus so mobile browsers raise the
+           virtual keyboard; key events bubble to the document handler -->
+      <input id="kbd" type="text" autocomplete="off" autocorrect="off"
+        autocapitalize="characters" spellcheck="false" enterkeyhint="next"
+        aria-hidden="true" tabindex="-1">
       <div id="grid" tabindex="0" aria-label="crossword grid"></div>
       <div id="clue-bar" hidden>
         <span id="clue-bar-num"></span>
