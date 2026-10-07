@@ -1,0 +1,337 @@
+<!DOCTYPE html><html><head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Formal Invitation</title>
+<meta name="description" content="Thanksgiving dinner at the family estate, western Tkaronto">
+<meta name="author" content="">
+<meta name="keywords" content="">
+
+
+
+
+
+
+<style>@font-face {
+  font-family: 'Cinzel Decorative';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/cinzeldecorative/v19/daaHSScvJGqLYhG8nNt8KPPswUAPniZoaelD.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Monsieur La Doulaise';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/monsieurladoulaise/v20/_Xmz-GY4rjmCbQfc-aPRaa4pqV340p7EZl5e.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Pinyon Script';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/pinyonscript/v24/6xKpdSJbL9-e9LuoeQiDRQR8aOI.ttf) format('truetype');
+}
+</style>
+
+<style>* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  background: radial-gradient(ellipse at center, #3a0d0d 0%, #1a0505 60%, #000 100%);
+  font-family: "Snell Roundhand", "Apple Chancery", "Zapfino", "Brush Script MT", cursive;
+  color: #3b2410;
+  display: flex; align-items: center; justify-content: center;
+  perspective: 1400px;
+}
+#curtainL, #curtainR {
+  position: fixed; top: 0; width: 51%; height: 100%; z-index: 50;
+  background: repeating-linear-gradient(90deg, #6b0000 0 30px, #8f0d0d 30px 55px, #5a0000 55px 70px);
+  box-shadow: inset 0 0 120px #000;
+  transition: transform 3.5s cubic-bezier(.7,0,.3,1);
+}
+#curtainL { left: 0; transform-origin: left; }
+#curtainR { right: 0; transform-origin: right; }
+body.open #curtainL { transform: translateX(-100%) skewY(4deg); }
+body.open #curtainR { transform: translateX(100%) skewY(-4deg); }
+#valance {
+  position: fixed; top: 0; left: 0; right: 0; height: 70px; z-index: 60;
+  background: linear-gradient(#b8860b, #6b0000 40%, #4a0000);
+  border-bottom: 6px double gold;
+  text-align: center; color: gold; font-size: 28px; line-height: 64px;
+  letter-spacing: 6px; text-shadow: 0 0 10px #000;
+}
+#seal {
+  position: fixed; z-index: 70; top: 50%; left: 50%;
+  width: 170px; height: 170px; margin: -85px 0 0 -85px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #e23b3b, #8b0000 60%, #4a0000);
+  box-shadow: 0 0 0 8px #6b0000, 0 0 40px 10px rgba(255,215,0,.5), inset -10px -10px 30px #300;
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  color: #ffd27a; cursor: pointer; font-size: 64px; text-shadow: 2px 2px 3px #300;
+  animation: pulse 1.6s ease-in-out infinite;
+  transition: transform 1.2s, opacity 1.2s;
+}
+#seal small { font-size: 14px; letter-spacing: 2px; font-family: Georgia, serif; }
+#seal.broken { transform: scale(3) rotate(200deg); opacity: 0; pointer-events: none; }
+@keyframes pulse { 50% { transform: scale(1.08); box-shadow: 0 0 0 8px #6b0000, 0 0 80px 25px rgba(255,215,0,.8), inset -10px -10px 30px #300; } }
+
+#scroll {
+  position: relative; z-index: 10; width: min(760px, 92vw); max-height: 0; overflow: hidden;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(139,90,43,.25), transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(139,90,43,.3), transparent 50%),
+    linear-gradient(#f6e6bf, #ecd49c);
+  border-left: 3px solid #b8860b; border-right: 3px solid #b8860b;
+  box-shadow: 0 0 60px rgba(255,200,80,.4), inset 0 0 80px rgba(120,70,20,.5);
+  transition: max-height 4s cubic-bezier(.4,0,.2,1) 2.5s;
+  text-align: center;
+}
+body.open #scroll { max-height: 92vh; }
+#scroll::before, #scroll::after {
+  content: ""; display: block; height: 34px; margin: 0 -20px;
+  background: linear-gradient(#5a3a12, #c9a15a 30%, #7a5020 70%, #3a2008);
+  border-radius: 17px;
+}
+.inner { padding: 20px 50px 30px; position: relative; }
+.crest { font-size: 54px; animation: spin 8s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotateY(360deg); } }
+.herald { font-family: "Trajan Pro", "Copperplate", Georgia, serif; letter-spacing: 8px; font-size: 13px; color: #8b0000; margin: 6px 0; }
+h1 {
+  font-size: clamp(34px, 6vw, 58px); font-weight: normal;
+  background: linear-gradient(90deg, #8b6508, #ffd700, #fff6c0, #ffd700, #8b6508);
+  background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shine 3s linear infinite; filter: drop-shadow(1px 1px 0 #5a3a12);
+}
+@keyframes shine { to { background-position: 200% center; } }
+.flourish { font-size: 26px; color: #8b5a2b; margin: 4px 0 10px; }
+#text { font-size: clamp(22px, 3.2vw, 32px); line-height: 1.55; min-height: 5.5em; }
+#text span { opacity: 0; display: inline-block; transform: translateY(-20px) scale(2); filter: blur(4px); transition: all .6s; white-space: pre; }
+#text span.on { opacity: 1; transform: none; filter: none; }
+#text .big { color: #8b0000; font-size: 1.2em; }
+.sig { margin-top: 14px; font-size: 22px; opacity: 0; transition: opacity 2s; }
+.sig.on { opacity: 1; }
+.rsvp { margin-top: 18px; display: flex; gap: 20px; justify-content: center; opacity: 0; transition: opacity 2s; min-height: 50px; }
+.rsvp.on { opacity: 1; }
+.rsvp button {
+  font-family: "Copperplate", Georgia, serif; font-size: 15px; letter-spacing: 2px; padding: 12px 22px;
+  border: 3px double #b8860b; border-radius: 4px; cursor: pointer;
+}
+#yes { background: linear-gradient(#ffe680, #d4a017); color: #3b2410; box-shadow: 0 0 20px gold; }
+#no { background: #ddd; color: #555; position: relative; transition: transform .25s; }
+#accepted { font-size: 30px; color: #8b0000; display: none; }
+
+.leaf, .spark { position: fixed; pointer-events: none; z-index: 5; }
+.leaf { top: -60px; animation: fall linear forwards; }
+@keyframes fall {
+  to { transform: translate(var(--dx), 110vh) rotate(var(--rot)); }
+}
+.spark { width: 6px; height: 6px; border-radius: 50%; z-index: 80; animation: burst 1.4s ease-out forwards; }
+@keyframes burst { to { transform: translate(var(--dx), var(--dy)); opacity: 0; } }
+#mute { position: fixed; bottom: 14px; right: 14px; z-index: 90; background: none; border: 1px solid gold; color: gold; padding: 6px 10px; cursor: pointer; font-family: Georgia, serif; display: none; }
+#yt, iframe#yt { position: fixed; left: -10px; top: -10px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+h1, #valance { font-family: "Monsieur La Doulaise", cursive !important; letter-spacing: 1px; }
+h1 { font-size: clamp(56px, 9vw, 96px); line-height: 1.1; }
+#valance { font-size: 40px; letter-spacing: 3px; }
+body, #text, .sig, #accepted { font-family: "Pinyon Script", cursive; }
+.herald, .rsvp button, #mute, #seal small { font-family: "Cinzel Decorative", serif; }
+#valance { font-family: "Cinzel Decorative", serif !important; font-size: 26px; letter-spacing: 6px; }
+h1 { font-family: "Cinzel Decorative", serif !important; font-size: clamp(30px, 5vw, 52px); letter-spacing: 3px; }
+</style>
+
+</head><body>
+
+
+<script>window.addEventListener("DOMContentLoaded", () => {
+  const $ = (id) => document.getElementById(id);
+  const TEXT = "I formally invite thee to a thanksgiving dinner at our family estate in the western regions of the city of Tkaronto.";
+  const BIG = new Set(["thee", "thanksgiving", "dinner", "estate", "Tkaronto."]);
+
+  let ctx, master, muted = false;
+
+  // No network allowed from file://, so the orchestra is synthesized.
+  function tone(freq, t, dur, type, vol) {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(vol, t + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(master);
+    o.start(t); o.stop(t + dur + 0.05);
+  }
+  const hz = (n) => 440 * Math.pow(2, (n - 69) / 12);
+
+  function fanfare(t) {
+    [[60, 0, .3], [64, .3, .3], [67, .6, .3], [72, .9, 1.2], [67, 2.1, .2], [72, 2.3, 1.6]]
+      .forEach(([n, s, d]) => { tone(hz(n), t + s, d, "sawtooth", .12); tone(hz(n + 12), t + s, d, "square", .03); });
+    [36, 43, 48].forEach((n) => tone(hz(n), t + .9, 3, "triangle", .2));
+  }
+
+  // Pachelbel's Canon in D: ground bass, arpeggiated chords, and the familiar upper voice.
+  const BASS = [50, 45, 47, 42, 43, 38, 43, 45];
+  const CHORDS = [[62,66,69],[61,64,69],[59,62,66],[61,66,69],[59,62,67],[57,62,66],[59,62,67],[57,61,64]];
+  const MELODY = [
+    [78,76,74,73,71,69,71,73],
+    [74,73,71,69,67,66,67,64],
+    [62,66,69,67,66,62,66,64],
+    [62,59,62,69,67,71,69,67],
+  ];
+  function canon(start) {
+    const beat = 0.62;
+    let t = start;
+    for (let cycle = 0; cycle < 40; cycle++) {
+      const mel = MELODY[cycle % MELODY.length];
+      for (let i = 0; i < 8; i++) {
+        const bt = t + i * beat * 2;
+        tone(hz(BASS[i]), bt, beat * 2, "triangle", .22);
+        tone(hz(BASS[i] - 12), bt, beat * 2, "sine", .15);
+        CHORDS[i].forEach((n, k) => tone(hz(n), bt + k * beat * 0.66, beat * 1.4, "sine", .05));
+        if (cycle > 0) tone(hz(mel[i]), bt, beat * 1.9, "triangle", .1);
+        if (cycle > 1) tone(hz(mel[i] + 12), bt + beat, beat * 0.9, "sine", .04);
+      }
+      t += 16 * beat;
+    }
+  }
+
+  function sparks(x, y, n = 40) {
+    for (let i = 0; i < n; i++) {
+      const s = document.createElement("div"); s.className = "spark";
+      const a = Math.random() * Math.PI * 2, r = 80 + Math.random() * 220;
+      s.style.left = x + "px"; s.style.top = y + "px";
+      s.style.background = ["gold", "#fff6c0", "#ff8c00", "#e23b3b"][i % 4];
+      s.style.boxShadow = "0 0 8px " + s.style.background;
+      s.style.setProperty("--dx", Math.cos(a) * r + "px");
+      s.style.setProperty("--dy", Math.sin(a) * r + "px");
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 1500);
+    }
+  }
+
+  function leaves() {
+    setInterval(() => {
+      const l = document.createElement("div"); l.className = "leaf";
+      l.textContent = ["🍁", "🍂", "🍃", "🌽", "🥧", "🦃"][Math.random() * 6 | 0];
+      l.style.left = Math.random() * 100 + "vw";
+      l.style.fontSize = 18 + Math.random() * 26 + "px";
+      l.style.animationDuration = 6 + Math.random() * 6 + "s";
+      l.style.setProperty("--dx", (Math.random() - .5) * 300 + "px");
+      l.style.setProperty("--rot", (Math.random() - .5) * 1440 + "deg");
+      document.body.appendChild(l);
+      setTimeout(() => l.remove(), 13000);
+    }, 280);
+  }
+
+  function writeText() {
+    const box = $("text");
+    const spans = TEXT.split(" ").map((w) => {
+      const s = document.createElement("span");
+      s.textContent = w + " ";
+      if (BIG.has(w)) s.classList.add("big");
+      box.appendChild(s);
+      return s;
+    });
+    spans.forEach((s, i) => setTimeout(() => {
+      s.classList.add("on");
+      if (s.classList.contains("big")) {
+        const r = s.getBoundingClientRect();
+        sparks(r.left + r.width / 2, r.top + r.height / 2, 25);
+      }
+    }, i * 420));
+    const end = spans.length * 420 + 600;
+    setTimeout(() => $("sig").classList.add("on"), end);
+    setTimeout(() => $("rsvp").classList.add("on"), end + 1500);
+  }
+
+  // Voices of Music, Vivaldi "Autumn". Synth Canon covers offline, file://, and blocked embeds.
+  const VIDEO_ID = "UIdwCrfDNjU";
+  let yt, fellBack = false;
+  function startVivaldi(fallbackAt) {
+    const fallback = () => {
+      if (fellBack || (yt && yt.getPlayerState && yt.getPlayerState() === 1)) return;
+      fellBack = true;
+      if (yt && yt.destroy) yt.destroy();
+      canon(Math.max(ctx.currentTime, fallbackAt));
+    };
+    const timer = setTimeout(fallback, 8000);
+    window.onYouTubeIframeAPIReady = () => {
+      yt = new YT.Player("yt", {
+        videoId: VIDEO_ID,
+        width: 1, height: 1,
+        playerVars: { autoplay: 1, controls: 0, loop: 1, playlist: VIDEO_ID, playsinline: 1 },
+        events: {
+          onReady: (ev) => { if (muted) ev.target.mute(); ev.target.playVideo(); },
+          onStateChange: (ev) => { if (ev.data === 1) clearTimeout(timer); },
+          onError: () => { clearTimeout(timer); fallback(); },
+        },
+      });
+    };
+    const s = document.createElement("script");
+    s.src = "https://www.youtube.com/iframe_api";
+    s.onerror = () => { clearTimeout(timer); fallback(); };
+    document.head.appendChild(s);
+  }
+
+  $("seal").addEventListener("click", (e) => {
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    master = ctx.createGain(); master.gain.value = .8;
+    const delay = ctx.createDelay(); delay.delayTime.value = .18;
+    const fb = ctx.createGain(); fb.gain.value = .3;
+    master.connect(ctx.destination);
+    master.connect(delay).connect(fb).connect(delay);
+    fb.connect(ctx.destination);
+    const now = ctx.currentTime;
+    fanfare(now);
+    startVivaldi(now + 4.2);
+    sparks(e.clientX, e.clientY, 80);
+    $("seal").classList.add("broken");
+    document.body.classList.add("open");
+    $("mute").style.display = "block";
+    leaves();
+    setTimeout(writeText, 6000);
+  });
+
+  $("mute").addEventListener("click", () => {
+    muted = !muted;
+    master.gain.setTargetAtTime(muted ? 0 : .8, ctx.currentTime, .1);
+    if (yt && yt.mute) muted ? yt.mute() : yt.unMute();
+    $("mute").textContent = muted ? "♪ summon the orchestra" : "♪ silence the orchestra";
+  });
+
+  const no = $("no");
+  const flee = () => {
+    no.style.transform = `translate(${(Math.random() - .5) * 400}px, ${(Math.random() - .5) * 200}px) rotate(${(Math.random() - .5) * 60}deg)`;
+    no.textContent = ["I decline", "Surely not", "Unthinkable", "Treason!", "Nay", "The pie awaits"][Math.random() * 6 | 0];
+  };
+  no.addEventListener("mouseenter", flee);
+  no.addEventListener("click", flee);
+
+  $("yes").addEventListener("click", () => {
+    $("rsvp").style.display = "none";
+    $("accepted").style.display = "block";
+    if (ctx) fanfare(ctx.currentTime);
+    for (let i = 0; i < 8; i++) setTimeout(() => sparks(Math.random() * innerWidth, Math.random() * innerHeight * .7, 60), i * 300);
+  });
+});
+</script>
+
+
+<div id="curtainL"></div><div id="curtainR"></div>
+<div id="valance">✦ BY ROYAL DECREE ✦</div>
+<div id="seal" title="Break the seal">🦃<small>BREAK THE SEAL</small></div>
+<div id="scroll"><div class="inner">
+  <div class="crest">🛡️</div>
+  <div class="herald">HEAR YE · HEAR YE · HEAR YE</div>
+  <h1>A Formal Invitation</h1>
+  <div class="flourish">❦ ~ ✠ ~ ❦</div>
+  <div id="text"></div>
+  <div class="sig" id="sig">With the utmost solemnity,<br>The Household &amp; Estate 🍂</div>
+  <div class="rsvp" id="rsvp">
+    <button id="yes">I ACCEPT WITH HONOUR</button>
+    <button id="no">I decline</button>
+  </div>
+  <div id="accepted">🎺 Thy presence is recorded in the annals. 🎺</div>
+</div></div>
+<button id="mute">♪ silence the orchestra</button>
+<div id="yt"></div>
+
+
+</body></html>
